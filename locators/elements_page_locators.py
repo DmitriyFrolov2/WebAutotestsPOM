@@ -24,3 +24,26 @@ class CheckBoxPageLocators:
     CHECKED_ITEMS = (By.CLASS_NAME, "rct-icon-check")
     TITLE_ITEM = (By.XPATH, ".//ancestor::span[@class='rct-text']")
     OUTPUT_RESULT = (By.XPATH, "//span[@class='text-success']")
+
+
+class RadioButtonPageLocators:
+    YES_RADIOBUTTON = (By.CSS_SELECTOR, 'label[class^="custom-control"][for="yesRadio"]')
+    IMPRESSIVE_RADIOBUTTON = (By.CSS_SELECTOR, 'label[class^="custom-control"][for="impressiveRadio"]')
+    NO_RADIOBUTTON = (By.CSS_SELECTOR, 'label[class^="custom-control"][for="noRadio"]')
+    OUTPUT_RESULT = (By.CSS_SELECTOR, 'p span[class="text-success"]')
+
+
+class WebTablePageLocators:
+    # add person form
+    ADD_BUTTON = (By.XPATH, "//button[@id='addNewRecordButton']")
+    FIRSTNAME_INPUT = (By.XPATH, "//input[@id='firstName']")
+    LASTNAME_INPUT = (By.XPATH, "//input[@id='lastName']")
+    EMAIL_INPUT = (By.XPATH, "//input[@id='userEmail']")
+    AGE_INPUT = (By.XPATH, "//input[@id='age']")
+    SALARY_INPUT = (By.XPATH, "//input[@id='salary']")
+    DEPARTMENT_INPUT = (By.XPATH, "//input[@id='department']")
+    SUBMIT = (By.XPATH, "//button[@id='submit']")
+
+    # table
+
+    FULL_PEOPLE_LIST = (By.XPATH, "//div[@class = 'rt-tr-group']")

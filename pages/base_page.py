@@ -47,7 +47,7 @@ class BasePage:
         """
         return wait(self.driver, timeout).until(EC.invisibility_of_element_located(locator))
 
-    def element_is_clickable(self, locator, timeout=5):
+    def element_is_clickable(self, locator, timeout=10):
         """
         Проверяет, является ли элемент кликабельным на странице в течение заданного времени ожидания.
         Элемент должен быть видимым и доступным для взаимодействия.
