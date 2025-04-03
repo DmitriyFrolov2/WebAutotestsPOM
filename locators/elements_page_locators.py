@@ -34,7 +34,7 @@ class RadioButtonPageLocators:
 
 
 class WebTablePageLocators:
-    # add person form
+    # Locators for the registration a new user
     ADD_BUTTON = (By.XPATH, "//button[@id='addNewRecordButton']")
     FIRSTNAME_INPUT = (By.XPATH, "//input[@id='firstName']")
     LASTNAME_INPUT = (By.XPATH, "//input[@id='lastName']")
@@ -44,6 +44,19 @@ class WebTablePageLocators:
     DEPARTMENT_INPUT = (By.XPATH, "//input[@id='department']")
     SUBMIT = (By.XPATH, "//button[@id='submit']")
 
-    # table
+    # Locators for the table
 
-    FULL_PEOPLE_LIST = (By.XPATH, "//div[@class = 'rt-tr-group']")
+    FULL_PERSON_LIST = (By.XPATH, "//div[@class = 'rt-tr-group']")
+    DELETE_BUTTON = (By.XPATH, "//span[@title='Delete']")
+    ROW_PARENT = (By.XPATH, ".//ancestor::div[@class = 'rt-tr-group']")
+    NO_ROWS_FOUND = (By.XPATH, "//div[@class ='rt-noData']")
+    COUNT_ROW_LIST = (By.XPATH, "//select[@aria-label = 'rows per page']")
+
+    #update
+    UPDATE_BUTTON = (By.XPATH, "//span[@title='Edit']")
+
+    # Locator for the search
+    SEARCH_INPUT = (By.XPATH, "//input[@id='searchBox']")
+
+
+
