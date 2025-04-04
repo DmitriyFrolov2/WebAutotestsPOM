@@ -1,6 +1,6 @@
 import pytest
 from pages.base_page import BasePage
-from pages.elements_page import TextBoxPage, CheckBoxPage, RadioButtonPage, WebTablePage
+from pages.elements_page import TextBoxPage, CheckBoxPage, RadioButtonPage, WebTablePage, ButtonsPage
 import random
 
 
@@ -70,8 +70,7 @@ class TestWebTables:
         web_table_page.search_some_person(lastname)
         age = web_table_page.update_person_info()
         row = web_table_page.check_search_person()
-        assert  age in row, "Возраст не был обновлён"
-
+        assert age in row, "Возраст не был обновлён"
 
     def test_web_table_delete_person(self, driver):
         web_table_page = WebTablePage(driver, 'https://demoqa.com/webtables')
@@ -82,7 +81,6 @@ class TestWebTables:
         text = web_table_page.check_deleted_person()
         assert text == 'No rows found', 'человек не был удалён'
 
-
     def test_web_table_change_count_rows(self, driver):
         web_table_page = WebTablePage(driver, 'https://demoqa.com/webtables')
         web_table_page.open()
@@ -90,7 +88,25 @@ class TestWebTables:
         assert count == [5, 10, 20, 25, 50, 100], "Количество строк в таблице не изменилось или изменилось некорректно."
 
 
+    class TestButtonsPage:
+        def test_double_click_button(self, driver):
+            button_page = ButtonsPage(driver, 'https://demoqa.com/buttons')
+            button_page.open()
+            actual_message = button_page.perform_double_click_button()
+            expected_message = "You have done a double click"
+            assert actual_message == expected_message, f"Ожидалось сообщение после двойного клика: '{expected_message}', но получено: '{actual_message}'."
 
+        def test_right_click_button(self, driver):
+            button_page = ButtonsPage(driver, 'https://demoqa.com/buttons')
+            button_page.open()
+            actual_message = button_page.perform_right_click_button()
+            expected_message = "You have done a right click"
+            assert actual_message == expected_message, f"Ожидалось сообщение после правого клика: '{expected_message}', но получено: '{actual_message}'."
 
-
+        def test_click_me_button(self, driver):
+            button_page = ButtonsPage(driver, 'https://demoqa.com/buttons')
+            button_page.open()
+            actual_message = button_page.perform_click_button()
+            expected_message = "You have done a dynamic click"
+            assert actual_message == expected_message, f"Ожидалось сообщение после обычного клика: '{expected_message}', но получено: '{actual_message}'."
 
