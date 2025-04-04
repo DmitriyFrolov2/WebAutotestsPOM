@@ -68,3 +68,21 @@ class ButtonsPageLocators:
     DOUBLE_CLICK_MESSAGE = (By.XPATH, "//p[@id='doubleClickMessage']")
     RIGHT_CLICK_MESSAGE = (By.XPATH, "//p[@id='rightClickMessage']")
     CLICK_MESSAGE = (By.XPATH, "//p[@id='dynamicClickMessage']")
+
+
+class LinksPageLocators:
+    # Links that navigate
+    SIMPLE_LINK = (By.XPATH, "//a[@id='simpleLink']") # Home
+    DYNAMIC_LINK = (By.XPATH, "//a[@id='dynamicLink']") # HomeXXXXX
+
+    # Links that trigger API calls
+    CREATED_LINK = (By.XPATH, "//a[@id='created']")
+    NO_CONTENT_LINK = (By.XPATH, "//a[@id='no-content']")
+    MOVED_LINK = (By.XPATH, "//a[@id='moved']")
+    BAD_REQUEST_LINK = (By.XPATH, "//a[@id='bad-request']")
+    UNAUTHORIZED_LINK = (By.XPATH, "//a[@id='unauthorized']")
+    FORBIDDEN_LINK = (By.XPATH, "//a[@id='forbidden']")
+    NOT_FOUND_LINK = (By.XPATH, "//a[@id='invalid-url']") # Not Found
+
+    # Output area
+    LINK_RESPONSE = (By.XPATH, "//p[@id='linkResponse']")
