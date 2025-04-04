@@ -1,11 +1,10 @@
 import random
-import time
-
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 
 from generator.generator import generated_person
 from locators.elements_page_locators import TextBoxPageLocators, CheckBoxPageLocators, RadioButtonPageLocators, \
-    WebTablePageLocators
+    WebTablePageLocators, ButtonsPageLocators
 from pages.base_page import BasePage
 
 
@@ -149,3 +148,35 @@ class WebTablePage(BasePage):
         list_rows = self.elements_are_present(
             self.locators.FULL_PERSON_LIST)
         return len(list_rows)
+
+
+class ButtonsPage(BasePage):
+    locators = ButtonsPageLocators()
+
+    def perform_double_click_button(self):
+        action = ActionChains(self.driver)
+        double_click_button = self.element_is_visible(self.locators.DOUBLE_CLICK_BUTTON)
+        action.double_click(double_click_button).perform()
+        return self.get_double_click_message()
+
+    def perform_right_click_button(self):
+        action = ActionChains(self.driver)
+        right_click_button = self.element_is_visible(self.locators.RIGHT_CLICK_BUTTON)
+        action.context_click(right_click_button).perform()
+        return self.get_right_click_message()
+
+    def perform_click_button(self):
+        if self.element_is_visible(self.locators.CLICK_ME_BUTTON).is_displayed():
+            self.element_is_visible(self.locators.CLICK_ME_BUTTON).click()
+            return self.get_click_message()
+        else:
+            return False
+
+    def get_double_click_message(self):
+        return self.element_is_visible(self.locators.DOUBLE_CLICK_MESSAGE).text
+
+    def get_right_click_message(self):
+        return self.element_is_visible(self.locators.RIGHT_CLICK_MESSAGE).text
+
+    def get_click_message(self):
+        return self.element_is_visible(self.locators.CLICK_MESSAGE).text

@@ -60,3 +60,11 @@ class WebTablePageLocators:
 
 
 
+class ButtonsPageLocators:
+    DOUBLE_CLICK_BUTTON = (By.XPATH, "//button[@id='doubleClickBtn']")
+    RIGHT_CLICK_BUTTON = (By.XPATH, "//button[@id='rightClickBtn']")
+    CLICK_ME_BUTTON = (By.XPATH, "//button[text()='Click Me']" )
+    # result
+    DOUBLE_CLICK_MESSAGE = (By.XPATH, "//p[@id='doubleClickMessage']")
+    RIGHT_CLICK_MESSAGE = (By.XPATH, "//p[@id='rightClickMessage']")
+    CLICK_MESSAGE = (By.XPATH, "//p[@id='dynamicClickMessage']")
