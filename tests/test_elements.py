@@ -1,7 +1,10 @@
 import pytest
+
+from locators.elements_page_locators import LinksPageLocators
 from pages.base_page import BasePage
-from pages.elements_page import TextBoxPage, CheckBoxPage, RadioButtonPage, WebTablePage, ButtonsPage
+from pages.elements_page import TextBoxPage, CheckBoxPage, RadioButtonPage, WebTablePage, ButtonsPage, LinksPage
 import random
+import re
 
 
 class TestTextBox:
@@ -88,25 +91,90 @@ class TestWebTables:
         assert count == [5, 10, 20, 25, 50, 100], "Количество строк в таблице не изменилось или изменилось некорректно."
 
 
-    class TestButtonsPage:
-        def test_double_click_button(self, driver):
-            button_page = ButtonsPage(driver, 'https://demoqa.com/buttons')
-            button_page.open()
-            actual_message = button_page.perform_double_click_button()
-            expected_message = "You have done a double click"
-            assert actual_message == expected_message, f"Ожидалось сообщение после двойного клика: '{expected_message}', но получено: '{actual_message}'."
+class TestButtonsPage:
+    def test_double_click_button(self, driver):
+        button_page = ButtonsPage(driver, 'https://demoqa.com/buttons')
+        button_page.open()
+        actual_message = button_page.perform_double_click_button()
+        expected_message = "You have done a double click"
+        assert actual_message == expected_message, f"Ожидалось сообщение после двойного клика: '{expected_message}', но получено: '{actual_message}'."
 
-        def test_right_click_button(self, driver):
-            button_page = ButtonsPage(driver, 'https://demoqa.com/buttons')
-            button_page.open()
-            actual_message = button_page.perform_right_click_button()
-            expected_message = "You have done a right click"
-            assert actual_message == expected_message, f"Ожидалось сообщение после правого клика: '{expected_message}', но получено: '{actual_message}'."
+    def test_right_click_button(self, driver):
+        button_page = ButtonsPage(driver, 'https://demoqa.com/buttons')
+        button_page.open()
+        actual_message = button_page.perform_right_click_button()
+        expected_message = "You have done a right click"
+        assert actual_message == expected_message, f"Ожидалось сообщение после правого клика: '{expected_message}', но получено: '{actual_message}'."
 
-        def test_click_me_button(self, driver):
-            button_page = ButtonsPage(driver, 'https://demoqa.com/buttons')
-            button_page.open()
-            actual_message = button_page.perform_click_button()
-            expected_message = "You have done a dynamic click"
-            assert actual_message == expected_message, f"Ожидалось сообщение после обычного клика: '{expected_message}', но получено: '{actual_message}'."
+    def test_click_me_button(self, driver):
+        button_page = ButtonsPage(driver, 'https://demoqa.com/buttons')
+        button_page.open()
+        actual_message = button_page.perform_click_button()
+        expected_message = "You have done a dynamic click"
+        assert actual_message == expected_message, f"Ожидалось сообщение после обычного клика: '{expected_message}', но получено: '{actual_message}'."
 
+
+class TestLinksPage:
+
+    @pytest.fixture(scope="function")
+    def links_page(self, driver):
+
+        page = LinksPage(driver, "https://demoqa.com/links")
+        page.open()
+        return page
+
+    def test_simple_link_opens_new_tab(self, links_page):
+        """
+        Проверяет, что 'Home' ссылка открывается в новой вкладке
+        и URL новой вкладки совпадает с href ссылки (если статус 200).
+        """
+
+        href_link, result = links_page.check_simple_link_opens_new_tab()
+
+        assert href_link is not None, "Не удалось получить href 'Home' ссылки."
+
+        # Проверяем, что если был возвращен URL, он совпадает с href
+        if isinstance(result, str) and result.startswith("https"):
+            assert result == href_link
+        # Проверяем, что если был возвращен статус-код, он не 200
+        elif isinstance(result, int):
+            assert result != 200, \
+                f"Статус ссылки был {result}, но ожидалось открытие новой вкладки (статус 200)."
+            print(f"Информация: Ссылка имеет статус {result}, новая вкладка не открывалась, как и ожидалось.")
+        else:
+            pytest.fail(f"Неожиданный результат от check_simple_link_opens_new_tab: {result}")
+
+    @pytest.mark.xfail(reason="Опечатка 'staus' вместо 'status' "
+                              "препятствует корректному парсингу ответа.")
+    @pytest.mark.parametrize(
+        "link_locator, expected_status_code, link_name",
+        [
+            (LinksPageLocators.CREATED_LINK, 201, "Created"),
+            (LinksPageLocators.NO_CONTENT_LINK, 204, "No Content"),
+            (LinksPageLocators.MOVED_LINK, 301, "Moved Permanently"),
+            (LinksPageLocators.BAD_REQUEST_LINK, 400, "Bad Request"),
+            (LinksPageLocators.UNAUTHORIZED_LINK, 401, "Unauthorized"),
+            (LinksPageLocators.FORBIDDEN_LINK, 403, "Forbidden"),
+            (LinksPageLocators.NOT_FOUND_LINK, 404, "Not Found"),
+        ]
+    )
+    def test_api_link_response(self, links_page, link_locator, expected_status_code, link_name):
+
+        print(f"\nТест: Проверка API ссылки '{link_name}' (ожидается статус {expected_status_code})")
+        response_text = links_page.click_api_link_and_get_response_text(link_locator)
+
+        assert response_text is not None, f"Не получен текст ответа для ссылки '{link_name}'."
+
+        # Пример строки: "Link has responded with status 201 and status text Created"
+        match = re.search(r"status (\d{3}) and status text ([\w\s]+)", response_text)
+        # match = re.search(r"(?:sta|sta\w+) (\d{3}) and status text ([\w\s]+)", response_text) - код для запуска теста без ошибки
+
+        assert match, f"Не удалось извлечь статус из текста ответа: '{response_text}'"
+
+        actual_status_code = int(match.group(1))
+        actual_status_text = match.group(2)
+
+        assert actual_status_code == expected_status_code, \
+            f"Неверный статус-код в ответе для '{link_name}'. Ожидался: {expected_status_code}, Получен: {actual_status_code} (Текст: '{response_text}')"
+
+        print(f"Успех: Клик по '{link_name}' вызвал ответ со статусом {actual_status_code} ({actual_status_text})")

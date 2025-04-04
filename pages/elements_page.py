@@ -1,11 +1,14 @@
 import random
-from selenium.webdriver.common.action_chains import ActionChains
+
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
 
 from generator.generator import generated_person
 from locators.elements_page_locators import TextBoxPageLocators, CheckBoxPageLocators, RadioButtonPageLocators, \
-    WebTablePageLocators, ButtonsPageLocators
+    WebTablePageLocators, ButtonsPageLocators, LinksPageLocators
 from pages.base_page import BasePage
+from selenium.common import TimeoutException
+from selenium.webdriver.support import expected_conditions as EC
 
 
 class TextBoxPage(BasePage):
@@ -154,15 +157,13 @@ class ButtonsPage(BasePage):
     locators = ButtonsPageLocators()
 
     def perform_double_click_button(self):
-        action = ActionChains(self.driver)
         double_click_button = self.element_is_visible(self.locators.DOUBLE_CLICK_BUTTON)
-        action.double_click(double_click_button).perform()
+        self.action_double_click(double_click_button)
         return self.get_double_click_message()
 
     def perform_right_click_button(self):
-        action = ActionChains(self.driver)
         right_click_button = self.element_is_visible(self.locators.RIGHT_CLICK_BUTTON)
-        action.context_click(right_click_button).perform()
+        self.action_right_click(right_click_button)
         return self.get_right_click_message()
 
     def perform_click_button(self):
@@ -180,3 +181,138 @@ class ButtonsPage(BasePage):
 
     def get_click_message(self):
         return self.element_is_visible(self.locators.CLICK_MESSAGE).text
+
+
+class LinksPage(BasePage):
+    locators = LinksPageLocators()
+
+    def check_simple_link_opens_new_tab(self, wait_timeout=10):  # Добавим параметр таймаута ожидания
+        """
+        Находит 'Home' ссылку, проверяет ее статус-код,
+        если 200, открывает в новой вкладке с помощью JS,
+        переключается на нее, ЖДЕТ ЗАГРУЗКИ URL и возвращает
+        исходный href и URL новой вкладки.
+        Возвращает (href, status_code) если статус не 200.
+        """
+        simple_link_element = self.element_is_visible(self.locators.SIMPLE_LINK)
+        if not simple_link_element:
+            print("Не найдена 'Home' ссылка (SIMPLE_LINK)")
+            return None, "Element Not Found"
+
+        link_href = simple_link_element.get_attribute('href')
+        if not link_href:
+            print("У 'Home' ссылки нет атрибута href")
+            return None, "Href Not Found"
+
+        # --- Проверка статуса ---
+        # Убедимся, что href валиден для запроса
+        if not link_href.startswith('http'):
+            print(f"Href '{link_href}' не является URL, статус не проверяется.")
+
+            status_code = 200
+        else:
+            status_code = self.get_status_code(link_href)
+
+        # --- Логика открытия вкладки ---
+        if status_code == 200:
+            print(
+                f"Ссылка '{link_href}' (или элемент без URL) считается готовой к открытию. Открываем в новой вкладке.")
+            initial_window_count = len(self.driver.window_handles)  # Запоминаем количество окон
+
+            # Открываем вручную через JS
+            self.execute_script(f"window.open('{link_href}', '_blank');")
+
+            # --- Ожидание новой вкладки ---
+            try:
+                print("Ожидание открытия новой вкладки...")
+                WebDriverWait(self.driver, wait_timeout).until(
+                    EC.number_of_windows_to_be(initial_window_count + 1)
+                )
+                print("Новая вкладка обнаружена.")
+            except TimeoutException:
+                print(f"Новая вкладка не открылась за {wait_timeout} секунд.")
+                return link_href, "New Tab Did Not Open"
+
+            # --- Переключение на новую вкладку ---
+            self.switch_to_new_tab()  # Используем метод из BasePage
+
+            # --- ОЖИДАНИЕ ЗАГРУЗКИ URL (КЛЮЧЕВОЕ ИЗМЕНЕНИЕ) ---
+            try:
+                print(f"Ожидание изменения URL с 'about:blank' в новой вкладке (макс. {wait_timeout} сек)...")
+                # Ждем, пока URL перестанет быть 'about:blank' ИЛИ станет равен link_href
+                # Лямбда - это как сокращенная запись для простой функции, которая сразу возвращает результат одного вычисления
+                WebDriverWait(self.driver, wait_timeout).until(
+                    lambda driver: driver.current_url != 'about:blank' and driver.current_url.startswith('http')
+
+                )
+                current_url = self.get_current_url()
+                print(f"URL в новой вкладке загружен: {current_url}")
+
+                # Дополнительная проверка на всякий случай
+                if current_url == 'about:blank':
+                    print("!!! Ошибка: URL остался 'about:blank' после ожидания.")
+                    return link_href, "URL Did Not Load Properly"
+
+                return link_href, current_url  # возвращаем href и загруженный URL
+
+            except TimeoutException:
+                final_url = self.get_current_url()  # Получаем URL, который есть на момент таймаута
+                print(
+                    f"Тайм-аут ({wait_timeout} сек) ожидания загрузки URL в новой вкладке. Финальный URL: {final_url}")
+                # Возвращаем то, что есть, чтобы тест показал реальный результат
+                return link_href, final_url
+
+        else:
+            # Если статус был не 200 (и это был валидный URL)
+            print(f"Ссылка '{link_href}' вернула статус {status_code}. Новая вкладка не открывалась.")
+            return link_href, status_code  # Возвращаем href и статус-код ошибки
+
+    def get_link_status_via_request(self, locator):
+        """
+        Находит элемент по локатору, получает его href
+        и возвращает статус-код, полученный через requests.
+        """
+        link_element = self.element_is_present(locator)  # Используем present, т.к. элемент может быть не видим
+        if not link_element:
+            print(f"Не найден элемент по локатору: {locator}")
+            return None
+
+        link_href = link_element.get_attribute('href')
+        if not link_href:
+            print(f"У элемента {locator} нет атрибута href")
+            return None
+
+        print(f"Проверяем статус для URL: {link_href}")
+        status_code = self.get_status_code(link_href)
+        return status_code
+
+    def click_api_link_and_get_response_text(self, locator):
+        """
+        Кликает по ссылке, которая должна вызвать API-запрос (без навигации),
+        ожидает появления ответа на странице и возвращает текст ответа.
+        """
+        link_element = self.element_is_visible(locator)
+        if not link_element:
+            print(f"Не найден кликабельный элемент по локатору: {locator}")
+            return None
+
+        # Запоминаем текущий текст ответа, чтобы дождаться его изменения
+        initial_response_text = self.get_element_text(self.locators.LINK_RESPONSE)
+
+        link_element.click()
+
+        # Ждем, пока текст в блоке ответа изменится или появится
+
+        try:
+            WebDriverWait(self.driver, 10).until(
+                lambda driver: self.get_element_text(self.locators.LINK_RESPONSE) != initial_response_text and \
+                               self.get_element_text(self.locators.LINK_RESPONSE) is not None
+            )
+        except TimeoutException:
+            print("Текст ответа не появился или не изменился после клика.")
+            # Возвращаем текущий текст, даже если он не изменился
+            return self.get_element_text(self.locators.LINK_RESPONSE)
+
+        response_text = self.get_element_text(self.locators.LINK_RESPONSE)
+        print(f"Получен ответ после клика по {locator}: '{response_text}'")
+        return response_text
