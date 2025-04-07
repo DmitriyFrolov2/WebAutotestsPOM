@@ -2,7 +2,8 @@ import pytest
 
 from locators.elements_page_locators import LinksPageLocators
 from pages.base_page import BasePage
-from pages.elements_page import TextBoxPage, CheckBoxPage, RadioButtonPage, WebTablePage, ButtonsPage, LinksPage
+from pages.elements_page import TextBoxPage, CheckBoxPage, RadioButtonPage, WebTablePage, ButtonsPage, LinksPage, \
+    UploadAndDownloadPage
 import random
 import re
 
@@ -178,3 +179,22 @@ class TestLinksPage:
             f"Неверный статус-код в ответе для '{link_name}'. Ожидался: {expected_status_code}, Получен: {actual_status_code} (Текст: '{response_text}')"
 
         print(f"Успех: Клик по '{link_name}' вызвал ответ со статусом {actual_status_code} ({actual_status_text})")
+
+
+class TestUploadAndDownloadPage:
+    @pytest.mark.usefixtures("chrome_only")
+    def test_upload_file(self, driver):
+        upload_page = UploadAndDownloadPage(driver, 'https://demoqa.com/upload-download')
+        upload_page.open()
+        expected_name = upload_page.upload_file()
+        actual_name = upload_page.get_uploaded_file_name()
+        assert expected_name == actual_name, \
+            f"Ожидалось: {expected_name}, загружено: {actual_name}"
+
+
+
+    def test_download_file(self, driver):
+        download_page = UploadAndDownloadPage(driver, 'https://demoqa.com/upload-download')
+        download_page.open()
+        check = download_page.download_file()
+        assert check is True, "Файл не был скачан"

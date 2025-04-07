@@ -1,5 +1,5 @@
 import random
-
+import os
 from data.data import Person
 from faker import Faker
 
@@ -21,3 +21,13 @@ def generated_person():
         permanent_address=faker_ru.address(),
 
     )
+
+
+def generate_file():
+    """Генерирует файл и возвращает ТОЛЬКО имя файла"""
+    file_name = f"{random.randint(0, 99)}.txt"
+    path = os.path.join(os.getcwd(), "downloads", file_name)
+    with open(path, 'w+') as file:
+        file.write(f'Hello World{random.randint(0, 99)}')
+    return file_name  # Только имя, без пути
+

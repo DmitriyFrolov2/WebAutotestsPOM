@@ -1,11 +1,13 @@
+import os
 import random
-
+import time
+import base64
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 
-from generator.generator import generated_person
+from generator.generator import generated_person, generate_file
 from locators.elements_page_locators import TextBoxPageLocators, CheckBoxPageLocators, RadioButtonPageLocators, \
-    WebTablePageLocators, ButtonsPageLocators, LinksPageLocators
+    WebTablePageLocators, ButtonsPageLocators, LinksPageLocators, UploadAndDownloadPageLocators
 from pages.base_page import BasePage
 from selenium.common import TimeoutException
 from selenium.webdriver.support import expected_conditions as EC
@@ -316,3 +318,38 @@ class LinksPage(BasePage):
         response_text = self.get_element_text(self.locators.LINK_RESPONSE)
         print(f"Получен ответ после клика по {locator}: '{response_text}'")
         return response_text
+
+
+class UploadAndDownloadPage(BasePage):
+    locators = UploadAndDownloadPageLocators()
+
+    def upload_file(self):
+        """Загружает файл и возвращает его имя"""
+        file_name = generate_file()
+        path = os.path.join(os.getcwd(), "downloads", file_name)
+        self.element_is_visible(self.locators.UPLOAD_FILE).send_keys(path)
+        os.remove(path)
+        return file_name
+
+    def get_uploaded_file_name(self):
+        uploaded_text = self.element_is_present(self.locators.UPLOADED_RESULT).text
+        return os.path.basename(uploaded_text)
+
+    def download_file(self):
+        """Скачивает файл и проверяет его наличие"""
+        link = self.element_is_present(self.locators.DOWNLOAD_FILE).get_attribute('href')
+        link_b = base64.b64decode(link)
+
+        # Создаем путь к файлу в папке downloads
+        file_name = f"filetest{random.randint(0, 999)}.jpg"
+        path = os.path.join(os.getcwd(), "downloads", file_name)
+
+        # Сохраняем файл
+        with open(path, 'wb+') as f:
+            offset = link_b.find(b'\xff\xd8')
+            f.write(link_b[offset:])
+            check_file = os.path.exists(path)
+
+        os.remove(path)
+
+        return check_file

@@ -73,7 +73,7 @@ class ButtonsPageLocators:
 class LinksPageLocators:
     # Links that navigate
     SIMPLE_LINK = (By.XPATH, "//a[@id='simpleLink']") # Home
-    DYNAMIC_LINK = (By.XPATH, "//a[@id='dynamicLink']") # HomeXXXXX
+    DYNAMIC_LINK = (By.XPATH, "//a[@id='dynamicLink']") # HomeXXXX
 
     # Links that trigger API calls
     CREATED_LINK = (By.XPATH, "//a[@id='created']")
@@ -82,7 +82,14 @@ class LinksPageLocators:
     BAD_REQUEST_LINK = (By.XPATH, "//a[@id='bad-request']")
     UNAUTHORIZED_LINK = (By.XPATH, "//a[@id='unauthorized']")
     FORBIDDEN_LINK = (By.XPATH, "//a[@id='forbidden']")
-    NOT_FOUND_LINK = (By.XPATH, "//a[@id='invalid-url']") # Not Found
+    NOT_FOUND_LINK = (By.XPATH, "//a[@id='invalid-url']")
 
     # Output area
     LINK_RESPONSE = (By.XPATH, "//p[@id='linkResponse']")
+
+
+class UploadAndDownloadPageLocators:
+    UPLOAD_FILE = (By.XPATH, "//input[@id='uploadFile']")
+    UPLOADED_RESULT = (By.XPATH, "//p[@id='uploadedFilePath']")
+
+    DOWNLOAD_FILE = (By.XPATH, "//a[@id='downloadButton']")
