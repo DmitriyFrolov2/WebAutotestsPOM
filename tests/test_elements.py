@@ -3,7 +3,7 @@ import pytest
 from locators.elements_page_locators import LinksPageLocators
 from pages.base_page import BasePage
 from pages.elements_page import TextBoxPage, CheckBoxPage, RadioButtonPage, WebTablePage, ButtonsPage, LinksPage, \
-    UploadAndDownloadPage
+    UploadAndDownloadPage, DynamicPropertiesPage
 import random
 import re
 
@@ -191,10 +191,30 @@ class TestUploadAndDownloadPage:
         assert expected_name == actual_name, \
             f"Ожидалось: {expected_name}, загружено: {actual_name}"
 
-
-
     def test_download_file(self, driver):
         download_page = UploadAndDownloadPage(driver, 'https://demoqa.com/upload-download')
         download_page.open()
         check = download_page.download_file()
         assert check is True, "Файл не был скачан"
+
+
+class TestDynamicPropertiesPage:
+
+    def test_enable_button(self,driver):
+        dynamic_properties_page = DynamicPropertiesPage(driver, 'https://demoqa.com/dynamic-properties')
+        dynamic_properties_page.open()
+        enable = dynamic_properties_page.check_enable_button()
+        assert enable is True, 'Кнопка не включилась'
+
+
+    def test_dynamic_properties(self, driver):
+        dynamic_properties_page = DynamicPropertiesPage(driver, 'https://demoqa.com/dynamic-properties')
+        dynamic_properties_page.open()
+        color_after, color_before = dynamic_properties_page.check_changed_of_color()
+        assert color_after != color_before , 'Цвет не изменился'
+
+    def test_appear_button(self, driver):
+        dynamic_properties_page = DynamicPropertiesPage(driver, 'https://demoqa.com/dynamic-properties')
+        dynamic_properties_page.open()
+        appear = dynamic_properties_page.check_appear_of_button()
+        assert appear is True , 'Кнопка не появилась'
