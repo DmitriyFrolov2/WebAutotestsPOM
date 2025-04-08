@@ -19,15 +19,43 @@ def generated_person():
         email=faker_ru.email(),
         current_address=faker_ru.address(),
         permanent_address=faker_ru.address(),
+        mobile=faker_ru.msisdn(),
 
     )
 
 
 def generate_file():
-    """Генерирует файл и возвращает ТОЛЬКО имя файла"""
     file_name = f"{random.randint(0, 99)}.txt"
-    path = os.path.join(os.getcwd(), "downloads", file_name)
-    with open(path, 'w+') as file:
-        file.write(f'Hello World{random.randint(0, 99)}')
-    return file_name  # Только имя, без пути
 
+    downloads_dir = os.path.join(os.getcwd(), "downloads")
+    os.makedirs(downloads_dir, exist_ok=True)  # создаем папку, если её нет
+
+    path = os.path.join(downloads_dir, file_name)
+
+    with open(path, 'w+') as file:
+        file.write("Hello World")
+
+    return file_name, path
+
+
+def generate_subject():
+    subjects = {
+        1: 'Hindi',
+        2: 'English',
+        3: 'Maths',
+        4: 'Physics',
+        5: 'Chemistry',
+        6: 'Biology',
+        7: 'Computer Science',
+        8: 'Commerce',
+        9: 'Accounting',
+        10: 'Economics',
+        11: 'Arts',
+        12: 'Social Studies',
+        13: 'History',
+        14: 'Civics'
+    }
+
+    subjects_list = list(subjects.values())
+    random_subject = random.choice(subjects_list)
+    return random_subject
