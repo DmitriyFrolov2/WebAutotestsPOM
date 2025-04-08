@@ -8,6 +8,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 # Импорт, необходимый для нового метода get_status_code
 import requests
+from selenium.webdriver.support.wait import WebDriverWait
 
 
 class BasePage:
@@ -26,9 +27,8 @@ class BasePage:
     def element_is_visible(self, locator, timeout=5):
         """
         Проверяет, виден ли элемент на странице в течение заданного времени ожидания.
-        (Ваша реализация с прокруткой)
         """
-        # Ваша реализация включает прокрутку к элементу перед проверкой видимости
+
         present_element = self.element_is_present(locator, timeout) # Сначала убедимся, что элемент есть в DOM
         if present_element:
              self.go_to_element(present_element)
@@ -107,6 +107,11 @@ class BasePage:
         else:
             print("Невозможно прокрутить к элементу: элемент не найден (None).")
 
+    def click_element(self, locator, timeout=10):
+        element = self.element_is_visible(locator, timeout)
+        WebDriverWait(self.driver, timeout).until(EC.element_to_be_clickable(locator))
+        element.click()
+
 
     def action_double_click(self, element):
         """
@@ -176,28 +181,9 @@ class BasePage:
             print("Невозможно переместить курсор: элемент не найден (None).")
 
     def remove_footer(self):
-        """
-        Удаляет элементы 'footer' и 'close-fixedban' со страницы с помощью JavaScript.
-        Добавлена проверка существования элементов перед удалением.
-        """
-        try:
-            # Проверяем и удаляем footer
-            footer = self.driver.find_elements("tag name", "footer")
-            if footer:
-                self.driver.execute_script("arguments[0].remove();", footer[0])
-                print("Footer удален.")
-            else:
-                print("Footer не найден для удаления.")
 
-            # Проверяем и удаляем close-fixedban
-            fixed_ban = self.driver.find_elements("id", "close-fixedban")
-            if fixed_ban:
-                self.driver.execute_script("arguments[0].remove();", fixed_ban[0])
-                print("Элемент 'close-fixedban' удален.")
-            else:
-                print("Элемент 'close-fixedban' не найден для удаления.")
-        except Exception as e:
-            print(f"Ошибка при удалении футера или баннера: {e}")
+        self.driver.execute_script("document.getElementByTagName('footer')[0].remove();")
+        self.driver.execute_script("document.getElementById('close-fixedban').remove();")
 
     def get_status_code(self, url, timeout=10):
         """
