@@ -12,7 +12,7 @@ class FormPageLocators:
     MOBILE = (By.CSS_SELECTOR, "input[id='userNumber']")
     DATE_OF_BIRTH = (By.CSS_SELECTOR, 'id="dateOfBirthInput"')
     SUBJECT = (By.CSS_SELECTOR, 'input[id="subjectsInput"]')
-    HOBBIES = (By.CSS_SELECTOR,f"div.custom-control.custom-checkbox.custom-control-inline "f"label[for='hobbies-checkbox-{randint(1, 3)}']")
+    HOBBIES = (By.CSS_SELECTOR, 'label[for="hobbies-checkbox-1"]')
     FILE_INPUT = (By.CSS_SELECTOR, "input[id='uploadPicture']")
     CURRENT_ADDRESS = (By.CSS_SELECTOR, '#currentAddress')
     SELECT_STATE = (By.CSS_SELECTOR, 'div[id="state"]')
