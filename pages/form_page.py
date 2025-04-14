@@ -20,7 +20,7 @@ class FormPage(BasePage):
         self.element_is_visible(self.locators.MOBILE).send_keys(person.mobile)
         self.element_is_visible(self.locators.SUBJECT).send_keys(subject_form)
         self.element_is_visible(self.locators.SUBJECT).send_keys(Keys.RETURN)
-        self.click_element(self.locators.HOBBIES)
+        self.element_is_visible(self.locators.HOBBIES).click()
         self.element_is_present(self.locators.FILE_INPUT).send_keys(file_path)
         os.remove(file_path)
         self.element_is_visible(self.locators.CURRENT_ADDRESS).send_keys(person.current_address)
