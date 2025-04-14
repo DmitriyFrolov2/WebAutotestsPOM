@@ -249,3 +249,6 @@ class BasePage:
         Выполняет переданный JavaScript в контексте текущего окна или фрейма.
         Это обертка для стандартного метода execute_script драйвера.
         """
+
+    def check_alert_message(self):
+        return self.driver.switch_to.alert
