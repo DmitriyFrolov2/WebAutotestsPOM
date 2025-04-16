@@ -1,12 +1,9 @@
-# base_page.py
-
-# Импорты, которые были у вас
 from selenium.common import TimeoutException # Добавим на случай, если захотите ловить ошибки ожидания
 from selenium.webdriver import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait as wait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.select import Select
 
-# Импорт, необходимый для нового метода get_status_code
 import requests
 from selenium.webdriver.support.wait import WebDriverWait
 
@@ -226,17 +223,6 @@ class BasePage:
             print(f"Элемент не стал видимым для получения текста за {timeout} секунд по локатору: {locator}")
             return None
 
-    def switch_to_new_tab(self):
-        """
-        Переключает фокус драйвера на последнюю открытую вкладку/окно.
-        Проверяет, что есть более одной вкладки.
-        """
-        window_handles = self.driver.window_handles
-        if len(window_handles) > 1:
-            self.driver.switch_to.window(window_handles[-1])
-            print(f"Переключились на новую вкладку: {self.driver.current_url}")
-        else:
-            print("Нет новой вкладки для переключения.")
 
     def get_current_url(self):
         """
@@ -250,5 +236,24 @@ class BasePage:
         Это обертка для стандартного метода execute_script драйвера.
         """
 
-    def check_alert_message(self):
+    def go_to_alert(self):
         return self.driver.switch_to.alert
+
+    def go_to_new_window(self, index):
+        self.driver.switch_to.window(self.driver.window_handles[index])
+
+
+    def go_to_frame(self, locator):
+        self.driver.switch_to.frame(locator)
+
+
+    def go_to_default_content(self):
+        self.driver.switch_to.default_content()
+
+
+    def select_option_by_text(self, locator, value):
+        select = Select(self.element_is_present(locator))
+        select.select_by_visible_text(value)
+
+
+

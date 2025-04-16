@@ -1,6 +1,7 @@
 import time
 import random
-from locators.alerts_frame_windows_locators import BrowserWindowsPageLocators, AlertsPageLocators, FramesPageLocators
+from locators.alerts_frame_windows_locators import BrowserWindowsPageLocators, AlertsPageLocators, FramesPageLocators, \
+    NestedFramesPageLocators, ModalDialogsPageLocators
 from pages.base_page import BasePage
 
 
@@ -9,16 +10,16 @@ class BrowserWindowsPage(BasePage):
     locators = BrowserWindowsPageLocators()
     def check_opened_new_tub(self):
         self.element_is_visible(self.locators.NEW_TAB_BUTTON).click()
-        self.switch_to_new_tab()
-        title_text =self.element_is_present(self.locators.TITLE_NEW_TAB).text
+        self.go_to_new_window(1)
+        title_text =self. get_element_text(self.locators.TITLE_NEW_TAB)
         return title_text
 
 
 
     def check_opened_new_window(self):
         self.element_is_visible(self.locators.NEW_WINDOW_BUTTON).click()
-        self.switch_to_new_tab()
-        title_text =self.element_is_present(self.locators.TITLE_NEW_TAB).text
+        self.go_to_new_window(1)
+        title_text =self. get_element_text(self.locators.TITLE_NEW_TAB)
         return title_text
 
 
@@ -28,40 +29,40 @@ class AlertsPage(BasePage):
 
     def check_see_alert(self):
         self.element_is_visible(self.locators.SEE_ALERT_BUTTON).click()
-        alert_window = self.check_alert_message()
+        alert_window = self.go_to_alert()
         return alert_window.text
 
 
     def check_alert_appear_5_sec(self):
         self.element_is_visible(self.locators.APPEAR_ALERT_BUTTON).click()
         time.sleep(5)
-        alert_window = self.check_alert_message()
+        alert_window = self.go_to_alert()
         return alert_window.text
 
 
     def check_confirm_alert(self):
         self.element_is_visible(self.locators.CONFIRM_ALERT_BUTTON).click()
-        alert_window = self.check_alert_message()
+        alert_window = self.go_to_alert()
         alert_window.accept()
-        text_result = self.element_is_present(self.locators.CONFIRM_ALERT_RESULT).text
+        text_result = self. get_element_text(self.locators.CONFIRM_ALERT_RESULT)
         return text_result
 
 
     def check_dismiss_alert(self):
         self.element_is_visible(self.locators.CONFIRM_ALERT_BUTTON).click()
-        alert_window = self.check_alert_message()
+        alert_window = self.go_to_alert()
         alert_window.dismiss()
-        text_result = self.element_is_present(self.locators.CONFIRM_ALERT_RESULT).text
+        text_result = self. get_element_text(self.locators.CONFIRM_ALERT_RESULT)
         return text_result
 
 
     def check_prompt_alert(self):
         text = f'autotest{random.randint(1, 999)}'
         self.element_is_visible(self.locators.PROMPT_ALERT_BUTTON).click()
-        alert_window = self.check_alert_message()
+        alert_window = self.go_to_alert()
         alert_window.send_keys(text)
         alert_window.accept()
-        text_result = self.element_is_present(self.locators.PROMPT_ALERT_RESULT).text
+        text_result = self. get_element_text(self.locators.PROMPT_ALERT_RESULT)
         return text, text_result
 
 
@@ -73,8 +74,8 @@ class FramesPage(BasePage):
             frame = self.element_is_present(self.locators.FIRST_FRAME)
             width = frame.get_attribute('width')
             height = frame.get_attribute('height')
-            self.driver.switch_to.frame(frame)
-            text = self.element_is_present(self.locators.TITLE_FRAME).text
+            self.go_to_frame(frame)
+            text = self. get_element_text(self.locators.TITLE_FRAME)
             self.driver.switch_to.default_content()
             return [width, height, text]
 
@@ -84,13 +85,40 @@ class FramesPage(BasePage):
             frame = self.element_is_present(self.locators.SECOND_FRAME)
             width = frame.get_attribute('width')
             height = frame.get_attribute('height')
-            self.driver.switch_to.frame(frame)
-            text = self.element_is_present(self.locators.TITLE_FRAME).text
+            self.go_to_frame(frame)
+            text =  self.get_element_text(self.locators.TITLE_FRAME)
             self.driver.switch_to.default_content()
             return [width, height, text]
 
 
 
+class NestedFramesPage(BasePage):
+    locators = NestedFramesPageLocators()
+
+    def check_nested_frame(self):
+        parent_frame = self.element_is_present(self.locators.PARENT_FRAME)
+        self.go_to_frame(parent_frame)
+        parent_text =  self.get_element_text(self.locators.PARENT_TEXT)
+        child_frame = self.element_is_present(self.locators.CHILD_FRAME)
+        self.go_to_frame(child_frame)
+        child_text =  self.get_element_text(self.locators.CHILD_TEXT)
+        return parent_text, child_text
 
 
+class ModalDialogsPage(BasePage):
+    locators = ModalDialogsPageLocators()
 
+    def check_small_modal_dialogs(self):
+        self.element_is_visible(self.locators.SMALL_MODAL_BUTTON).click()
+        title = self.get_element_text(self.locators.TITLE_SMALL_MODAL)
+        text = self.get_element_text(self.locators.TEXT_SMALL_MODAL)
+        self.element_is_visible(self.locators.CLOSE_SMALL_MODAL_BUTTON).click()
+        return title, text
+
+
+    def check_large_modal_dialogs(self):
+        self.element_is_visible(self.locators.LARGE_MODAL_BUTTON).click()
+        title = self.get_element_text(self.locators.TITLE_LARGE_MODAL)
+        text = self.get_element_text(self.locators.TEXT_LARGE_MODAL)
+        self.element_is_visible(self.locators.CLOSE_LARGE_MODAL_BUTTON).click()
+        return title, text
