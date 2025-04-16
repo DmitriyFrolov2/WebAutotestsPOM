@@ -1,4 +1,5 @@
-from pages.alerts_frame_windows_page import BrowserWindowsPage, AlertsPage, FramesPage
+from pages.alerts_frame_windows_page import BrowserWindowsPage, AlertsPage, FramesPage, NestedFramesPage, \
+    ModalDialogsPage
 
 
 class TestAlertsFrameWindows:
@@ -65,6 +66,41 @@ class TestAlertsFrameWindows:
             assert result_frame1 ==['500px', '350px', 'This is a sample page']
             assert result_frame2 == ['100px', '100px', 'This is a sample page']
 
+
+    class TestNestedFramesPage:
+
+        def test_nested_frames(self,driver):
+            nested_frame_page = NestedFramesPage(driver,'https://demoqa.com/nestedframes')
+            nested_frame_page.open()
+            parent_text, child_text =nested_frame_page.check_nested_frame()
+            assert parent_text == 'Parent frame'
+            assert child_text =='Child Iframe'
+
+
+
+
+    class TestModalDialogsPage:
+
+        def test_small_modal_dialogs(self,driver):
+            small_dialogs_page = ModalDialogsPage(driver,'https://demoqa.com/modal-dialogs')
+            small_dialogs_page.open()
+            small_title, small_text = small_dialogs_page.check_small_modal_dialogs()
+            assert small_title == 'Small Modal', \
+                f"Ожидался заголовок 'Small Modal', но получен '{small_title}'"
+
+            assert small_text == 'This is a small modal. It has very less content', \
+                f"Ожидался текст 'This is a small modal...', но получен '{small_text}'"
+
+
+        def test_large_modal_dialogs(self,driver):
+            large_dialogs_page = ModalDialogsPage(driver,'https://demoqa.com/modal-dialogs')
+            large_dialogs_page.open()
+            large_title, large_text = large_dialogs_page.check_large_modal_dialogs()
+            assert large_title == 'Large Modal', \
+                f"Ожидался заголовок 'Large Modal', но получен '{large_title}'"
+
+            assert len(large_text) > 100, \
+                f"Ожидался длинный текст (>100 символов), но получено {len(large_text)} символов"
 
 
 
