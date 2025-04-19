@@ -169,3 +169,13 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc!/debug.py
+
+# Игнорировать ВСЁ в папке firefox, кроме нужных файлов
+/extensions/profiles/firefox/**
+!/extensions/profiles/firefox/prefs.js
+!/extensions/profiles/firefox/user.js
+!/extensions/profiles/firefox/extensions.json
+!/extensions/profiles/firefox/extension-preferences.json
+!/extensions/profiles/firefox/addons.json
+!/extensions/profiles/firefox/addonStartup.json.lz4
+!/extensions/profiles/firefox/extensions/

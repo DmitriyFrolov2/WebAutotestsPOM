@@ -1,4 +1,4 @@
-from selenium.common import TimeoutException # Добавим на случай, если захотите ловить ошибки ожидания
+from selenium.common import TimeoutException
 from selenium.webdriver import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait as wait
 from selenium.webdriver.support import expected_conditions as EC
