@@ -1,6 +1,6 @@
 import random
 import os
-from data.data import Person
+from data.data import Person, Color
 from faker import Faker
 
 faker_ru = Faker('ru_RU')
@@ -59,3 +59,9 @@ def generate_subject():
     subjects_list = list(subjects.values())
     random_subject = random.choice(subjects_list)
     return random_subject
+
+
+def generated_color():
+    yield Color(
+        color_name=["Red", "Blue", "Green", "Yellow", "Purple", "Black", "White", "Voilet", "Indigo", "Magenta", "Aqua"]
+    )
