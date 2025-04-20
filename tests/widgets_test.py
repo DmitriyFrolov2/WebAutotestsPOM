@@ -17,7 +17,7 @@ class TestAccordianPage:
 
 class TestAutoCompletePage:
 
-    def test_fill_single_autocomplete(self,driver):
+    def test_fill_multi_autocomplete(self,driver):
         auto_complete_page = AutoCompletePage(driver, "https://demoqa.com/auto-complete")
         auto_complete_page.open()
         colors = auto_complete_page.fill_input_multi()
@@ -32,4 +32,23 @@ class TestAutoCompletePage:
         auto_complete_page.fill_input_multi()
         count_value_before , count_value_after = auto_complete_page.remove_value_from_multi()
         assert count_value_before != count_value_after, 'Элемент не удален'
+
+    def test_clear_all_from_multi(self, driver):
+        auto_complete_page = AutoCompletePage(driver, "https://demoqa.com/auto-complete")
+        auto_complete_page.open()
+        auto_complete_page.fill_input_multi()
+        is_removed = auto_complete_page.clear_all_from_multi()
+        assert is_removed == True, 'Элемент не удалён'
+
+
+    def test_fill_single_autocomplete(self,driver):
+        auto_complete_page = AutoCompletePage(driver, "https://demoqa.com/auto-complete")
+        auto_complete_page.open()
+        color = auto_complete_page.fill_input_single()
+        color_result = auto_complete_page.check_color_in_single()
+        assert color == color_result, 'Не добавился цвет'
+
+
+
+
 
