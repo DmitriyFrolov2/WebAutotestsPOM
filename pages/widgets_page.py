@@ -9,6 +9,7 @@ from locators.widgets_page_locators import AccordianPageLocators, AutocompletePa
 from pages.base_page import BasePage
 from selenium.common.exceptions import TimeoutException
 
+
 class AccordianPage(BasePage):
     locators = AccordianPageLocators()
 
@@ -49,7 +50,6 @@ class AutoCompletePage(BasePage):
             input_multi.send_keys(Keys.RETURN)
         return colors
 
-
     def remove_value_from_multi(self):
         count_value_before = len(self.elements_are_present(self.locators.MULTI_VALUE))
         remove_button_list = self.elements_are_visible(self.locators.MULTI_VALUE_REMOVE)
@@ -59,10 +59,37 @@ class AutoCompletePage(BasePage):
         count_value_after = len(self.elements_are_present(self.locators.MULTI_VALUE))
         return count_value_before, count_value_after
 
-
     def check_color_in_multi(self):
         color_list = self.elements_are_present(self.locators.MULTI_VALUE)
         colors = []
         for color in color_list:
             colors.append(color.text)
         return colors
+
+    def clear_all_from_multi(self):
+
+        WebDriverWait(self.driver, 10).until(
+            EC.element_to_be_clickable(self.locators.CLEAR_ALL_BUTTON)
+        ).click()
+
+        try:
+            WebDriverWait(self.driver, 10).until(
+                EC.invisibility_of_element_located(self.locators.CLEAR_ALL_BUTTON)
+            )
+            return True
+        except TimeoutException:
+            return False
+
+
+    def fill_input_single(self):
+        color = random.sample(next(generated_color()).color_name, k=1)
+        input_single = self.element_is_clickable(self.locators.SINGLE_INPUT)
+        input_single.send_keys(color)
+        time.sleep(0.2)
+        input_single.send_keys(Keys.RETURN)
+        return color[0]
+
+
+    def check_color_in_single(self):
+        color = self.element_is_visible(self.locators.SINGLE_VALUE)
+        return color.text
