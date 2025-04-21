@@ -5,7 +5,8 @@ from selenium.webdriver import Keys
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from generator.generator import generated_color, generated_date
-from locators.widgets_page_locators import AccordianPageLocators, AutocompletePageLocators, DatePickerPageLocators
+from locators.widgets_page_locators import AccordianPageLocators, AutocompletePageLocators, DatePickerPageLocators, \
+    SliderPageLocators, ProgressBarPageLocators
 from pages.base_page import BasePage
 from selenium.common.exceptions import TimeoutException
 
@@ -80,7 +81,6 @@ class AutoCompletePage(BasePage):
         except TimeoutException:
             return False
 
-
     def fill_input_single(self):
         color = random.sample(next(generated_color()).color_name, k=1)
         input_single = self.element_is_clickable(self.locators.SINGLE_INPUT)
@@ -88,7 +88,6 @@ class AutoCompletePage(BasePage):
         time.sleep(0.2)
         input_single.send_keys(Keys.RETURN)
         return color[0]
-
 
     def check_color_in_single(self):
         color = self.element_is_visible(self.locators.SINGLE_VALUE)
@@ -124,8 +123,6 @@ class DatePickerPage(BasePage):
         value_date_time_after = input_date_time_after.get_attribute("value")
         return value_date_time_before, value_date_time_after
 
-
-
     def set_date_item_from_list(self, elements, value):
         item_list = self.elements_are_present(elements)
         for item in item_list:
@@ -134,8 +131,28 @@ class DatePickerPage(BasePage):
                 break
 
 
+class SliderPage(BasePage):
+    locators = SliderPageLocators()
+
+    def change_slider_value(self):
+        value_before = self.element_is_visible(self.locators.SLIDER_VALUE).get_attribute('value')
+        slider_input = self.element_is_visible(self.locators.SLIDER_INPUT)
+        self.action_drag_and_drop_by_offset(slider_input, random.randint(1, 100), 0)
+        value_after = self.element_is_visible(self.locators.SLIDER_VALUE).get_attribute('value')
+
+        return value_before, value_after
 
 
+class ProgressBarPage(BasePage):
+    locators = ProgressBarPageLocators()
 
 
+    def change_progress_bar_value(self):
+        value_before = self.element_is_present(self.locators.PROGRESS_BAR_VALUE).text
+        progress_bar = self.element_is_visible(self.locators.PROGRESS_BAR_BUTTON)
+        progress_bar.click()
+        time.sleep(random.randint(2, 5))
+        progress_bar.click()
 
+        value_after = self.element_is_present(self.locators.PROGRESS_BAR_VALUE).text
+        return value_before, value_after

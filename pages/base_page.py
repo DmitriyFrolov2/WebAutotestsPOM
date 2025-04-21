@@ -163,7 +163,7 @@ class BasePage:
             action.drag_and_drop(what, where)
             action.perform()
         else:
-             print("Невозможно выполнить drag and drop: один или оба элемента не найдены (None).")
+             print("Невозможно выполнить drag and drop: один или оба элемента не найдены.")
 
 
     def action_move_to_element(self, element):
