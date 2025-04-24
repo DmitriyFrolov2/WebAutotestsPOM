@@ -1,6 +1,7 @@
 import time
-
-from pages.widgets_page import AccordianPage, AutoCompletePage, DatePickerPage, SliderPage, ProgressBarPage
+import pytest
+from pages.widgets_page import AccordianPage, AutoCompletePage, DatePickerPage, SliderPage, ProgressBarPage, TabsPage, \
+    ToolsTipsPage, MenuPage
 
 
 class TestAccordianPage:
@@ -83,6 +84,42 @@ class TestProgressBarPage:
         assert before != after, 'Значение слайдера не изменилось'
 
 
+class TestTabsPage:
+
+    def test_tabs(self,driver):
+        tabs_page = TabsPage(driver, "https://demoqa.com/tabs")
+        tabs_page.open()
+        what_button, what_content = tabs_page.check_tabs('what')
+        origin_button, origin_content = tabs_page.check_tabs('origin')
+        use_button, use_content = tabs_page.check_tabs('use')
+        more_button, more_content =tabs_page.check_tabs('more')
+        assert what_button == 'What' and what_content != 0, 'Неправильный заголовок или отсутствующий текст'
+        assert origin_button == 'Origin' and origin_content != 0, 'Неправильный заголовок или отсутствующий текст'
+        assert use_button == 'Use' and use_content != 0, 'Неправильный заголовок или отсутствующий текст'
+        assert more_button == 'More' and more_content != 0, 'Неправильный заголовок или отсутствующий текст'
+
+
+class TestToolsTips:
+
+    def test_tooltips(self,driver):
+        tool_tips_page = ToolsTipsPage(driver, "https://demoqa.com/tool-tips")
+        tool_tips_page.open()
+        button_text,field_text, contrary_text,section_text = tool_tips_page.check_tooltips()
+        assert button_text == 'You hovered over the Button', 'Hover отсутствует или неверное содержание'
+        assert field_text == 'You hovered over the text field', 'Hover отсутствует или неверное содержание'
+        assert contrary_text == 'You hovered over the Contrary', 'Hover отсутствует или неверное содержание'
+        assert section_text == 'You hovered over the 1.10.32', 'Hover отсутствует или неверное содержание'
+
+
+
+class TestMenuPage:
+
+    def test_menu_items(self,driver):
+        menu_page = MenuPage(driver, "https://demoqa.com/menu")
+        menu_page.open()
+        result = menu_page.check_menu()
+        print(result)
+        assert result == ['Main Item 1', 'Main Item 2', 'Sub Item', 'Sub Item', 'SUB SUB LIST »', 'Sub Sub Item 1', 'Sub Sub Item 2', 'Main Item 3'], 'Не все пункты отображаются'
 
 
 

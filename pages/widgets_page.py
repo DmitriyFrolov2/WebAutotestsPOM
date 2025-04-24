@@ -6,7 +6,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from generator.generator import generated_color, generated_date
 from locators.widgets_page_locators import AccordianPageLocators, AutocompletePageLocators, DatePickerPageLocators, \
-    SliderPageLocators, ProgressBarPageLocators
+    SliderPageLocators, ProgressBarPageLocators, TabsPageLocators, ToolTipsPageLocators, MenuPageLocators
 from pages.base_page import BasePage
 from selenium.common.exceptions import TimeoutException
 
@@ -156,3 +156,66 @@ class ProgressBarPage(BasePage):
 
         value_after = self.element_is_present(self.locators.PROGRESS_BAR_VALUE).text
         return value_before, value_after
+
+
+class TabsPage(BasePage):
+    locators = TabsPageLocators()
+
+    def check_tabs(self, name_tab):
+        tabs = {'what':
+                    {'title': self.locators.TABS_WHAT,
+                     'content': self.locators.TABS_WHAT_CONTENT},
+                'origin':
+                    {'title': self.locators.TABS_ORIGIN,
+                     'content': self.locators.TABS_ORIGIN_CONTENT},
+                'use':
+                    {'title': self.locators.TABS_USE,
+                     'content': self.locators.TABS_USE_CONTENT},
+                'more':
+                    {'title': self.locators.TABS_MORE,
+                     'content': self.locators.TABS_MORE_CONTENT},
+                }
+
+        button = self.element_is_visible(tabs[name_tab]['title'])
+        button.click()
+        what_content = self.element_is_visible(tabs[name_tab]['content']).text
+        return button.text, len(what_content)
+
+
+class ToolsTipsPage(BasePage):
+    locators = ToolTipsPageLocators()
+
+
+    def get_text_from_tooltip(self, hover_element,tool_tip_element):
+        element = self.element_is_present(hover_element)
+        self.action_move_to_element(element)
+        self.element_is_visible(tool_tip_element)
+        tool_tip = self.element_is_visible(self.locators.TOOL_TIPS_INNERS)
+        tool_tip_text = tool_tip.text
+        return tool_tip_text
+
+
+
+    def check_tooltips(self):
+        tool_tip_text_button = self.get_text_from_tooltip(self.locators.BUTTON, self.locators.TOOL_TIP_BUTTON)
+        time.sleep(0.3)
+        tool_tip_text_field = self.get_text_from_tooltip(self.locators.FIELD, self.locators.TOOL_TIP_FIELD)
+        time.sleep(0.3)
+        tool_tip_text_contrary = self.get_text_from_tooltip(self.locators.CONTRARY_LINK, self.locators.TOOL_TIP_CONTRARY)
+        time.sleep(0.3)
+        tool_tip_text_sections = self.get_text_from_tooltip(self.locators.SECTION_LINK, self.locators.TOOL_TIP_SECTION)
+        time.sleep(0.3)
+        return tool_tip_text_button, tool_tip_text_field, tool_tip_text_contrary, tool_tip_text_sections
+
+
+
+class MenuPage(BasePage):
+    locators = MenuPageLocators()
+
+    def check_menu(self):
+        menu_item_lst = self.elements_are_present(self.locators.MENU_ITEMS_LIST)
+        data = []
+        for item in menu_item_lst:
+            self.action_move_to_element(item)
+            data.append(item.text)
+        return data

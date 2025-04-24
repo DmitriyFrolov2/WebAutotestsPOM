@@ -21,7 +21,7 @@ class BasePage:
         """
         self.driver.get(self.url)
 
-    def element_is_visible(self, locator, timeout=5):
+    def element_is_visible(self, locator, timeout=10):
         """
         Проверяет, виден ли элемент на странице в течение заданного времени ожидания.
         """
