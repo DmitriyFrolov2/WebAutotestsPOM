@@ -255,6 +255,3 @@ class BasePage:
         select = Select(self.element_is_present(locator))
         select.select_by_visible_text(value)
 
-
-
-

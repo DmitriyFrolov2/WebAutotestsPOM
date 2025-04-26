@@ -1,7 +1,6 @@
 import pytest
 
 from locators.elements_page_locators import LinksPageLocators
-from pages.base_page import BasePage
 from pages.elements_page import TextBoxPage, CheckBoxPage, RadioButtonPage, WebTablePage, ButtonsPage, LinksPage, \
     UploadAndDownloadPage, DynamicPropertiesPage
 import random
