@@ -71,3 +71,19 @@ class ToolTipsPageLocators:
 
 class MenuPageLocators:
     MENU_ITEMS_LIST = (By.CSS_SELECTOR, 'ul[id="nav"] li a')
+
+
+class SelectMenuPageLocators:
+    SELECT_VALUE_DROPDOWN = (By.CSS_SELECTOR, "input[id='react-select-2-input']")
+    SELECT_VALUE_DROPDOWN_RESULT = (By.XPATH, "//*[@id='withOptGroup']/div/div[1]/div[1]")
+
+    SELECT_ONE_DROPDOWN = (By.CSS_SELECTOR, "input[id='react-select-3-input']")
+    SELECT_ONE_DROPDOWN_RESULT = (By.XPATH, "//*[@id='selectOne']/div/div[1]/div[1]")
+
+    MULTISELECT_DROPDOWN = (By.CSS_SELECTOR, "input[id='react-select-4-input']")
+    MULTISELECT_DROPDOWN_RESULTS = (By.CSS_SELECTOR, "div[class='css-12jo7m5']")
+    REMOVE_ELEMENT_FROM_MULTISELECT = (By.CSS_SELECTOR, "div[class='css-1rhbuit-multiValue'] svg path")
+    ALL_REMOVE_BUTTON = (By.XPATH,("//body//div[@id='app']//div[@class='row']//div[@class='row']//div[contains(@class,'css-1wy0on6')]//div[1]//*[name()='svg']//*[name()='path' and contains(@d,'M14.348 14')]"))
+
+    OLD_SELECT = (By.CSS_SELECTOR, "select[id='oldSelectMenu']")
+    STANDART_SELECT = (By.CSS_SELECTOR, "select[id='cars']")

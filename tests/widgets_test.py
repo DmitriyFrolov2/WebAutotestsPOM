@@ -1,7 +1,7 @@
 import time
 import pytest
 from pages.widgets_page import AccordianPage, AutoCompletePage, DatePickerPage, SliderPage, ProgressBarPage, TabsPage, \
-    ToolsTipsPage, MenuPage
+    ToolsTipsPage, MenuPage, SelectMenuPage
 
 
 class TestAccordianPage:
@@ -99,7 +99,7 @@ class TestTabsPage:
         assert more_button == 'More' and more_content != 0, 'Неправильный заголовок или отсутствующий текст'
 
 
-class TestToolsTips:
+class TestToolsTipsPage:
 
     def test_tooltips(self,driver):
         tool_tips_page = ToolsTipsPage(driver, "https://demoqa.com/tool-tips")
@@ -118,10 +118,55 @@ class TestMenuPage:
         menu_page = MenuPage(driver, "https://demoqa.com/menu")
         menu_page.open()
         result = menu_page.check_menu()
-        print(result)
         assert result == ['Main Item 1', 'Main Item 2', 'Sub Item', 'Sub Item', 'SUB SUB LIST »', 'Sub Sub Item 1', 'Sub Sub Item 2', 'Main Item 3'], 'Не все пункты отображаются'
 
 
+class TestSelectMenuPage:
+
+    def test_select_value(self,driver):
+        select_menu_page = SelectMenuPage(driver, "https://demoqa.com/select-menu")
+        select_menu_page.open()
+        select_input_value, select_current_value = select_menu_page.check_select_value()
+        assert select_input_value in select_current_value, "Выбранное значение не отображается в поле"
+
+
+
+    def test_select_one_value(self,driver):
+        select_menu_page = SelectMenuPage(driver, "https://demoqa.com/select-menu")
+        select_menu_page.open()
+        select_input_one_value, select_current_one_value = select_menu_page.check_select_one_value()
+        assert select_input_one_value in select_current_one_value, 'Выбранное значение не отображается в поле'
+
+
+    def test_old_style_select(self,driver):
+        select_menu_page = SelectMenuPage(driver, "https://demoqa.com/select-menu")
+        select_menu_page.open()
+        selected_text,random_color = select_menu_page.check_old_style_select()
+        assert selected_text == random_color, 'Выбранное значение не соответствует ожидаемому'
+
+    def test_select_multiple_value(self, driver):
+        select_menu_page = SelectMenuPage(driver, "https://demoqa.com/select-menu")
+        select_menu_page.open()
+        select_values, current_values = select_menu_page.check_multi_select()
+
+        assert set(select_values) == set(current_values),'Выбранные значения не совпадают с отображаемыми'
+
+
+    def test_remove_select_multiple_value(self, driver):
+        select_menu_page = SelectMenuPage(driver, "https://demoqa.com/select-menu")
+        select_menu_page.open()
+        select_menu_page.check_multi_select()
+        items_removed_status = select_menu_page.are_multiselected_items_removed()
+        assert items_removed_status is True, 'Элементы не удалены'
+
+
+    def test_standart_multiselect(self,driver):
+        select_menu_page = SelectMenuPage(driver, "https://demoqa.com/select-menu")
+        select_menu_page.open()
+
+        actual_selected_values, expected_selected_values = select_menu_page.check_standart_multiselect()
+
+        assert actual_selected_values == expected_selected_values,'Выбранные значения не совпадают с отображаемыми'
 
 
 

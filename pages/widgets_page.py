@@ -6,9 +6,11 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from generator.generator import generated_color, generated_date
 from locators.widgets_page_locators import AccordianPageLocators, AutocompletePageLocators, DatePickerPageLocators, \
-    SliderPageLocators, ProgressBarPageLocators, TabsPageLocators, ToolTipsPageLocators, MenuPageLocators
+    SliderPageLocators, ProgressBarPageLocators, TabsPageLocators, ToolTipsPageLocators, MenuPageLocators, \
+    SelectMenuPageLocators
 from pages.base_page import BasePage
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.support.select import Select
 
 
 class AccordianPage(BasePage):
@@ -146,7 +148,6 @@ class SliderPage(BasePage):
 class ProgressBarPage(BasePage):
     locators = ProgressBarPageLocators()
 
-
     def change_progress_bar_value(self):
         value_before = self.element_is_present(self.locators.PROGRESS_BAR_VALUE).text
         progress_bar = self.element_is_visible(self.locators.PROGRESS_BAR_BUTTON)
@@ -185,8 +186,7 @@ class TabsPage(BasePage):
 class ToolsTipsPage(BasePage):
     locators = ToolTipsPageLocators()
 
-
-    def get_text_from_tooltip(self, hover_element,tool_tip_element):
+    def get_text_from_tooltip(self, hover_element, tool_tip_element):
         element = self.element_is_present(hover_element)
         self.action_move_to_element(element)
         self.element_is_visible(tool_tip_element)
@@ -194,19 +194,17 @@ class ToolsTipsPage(BasePage):
         tool_tip_text = tool_tip.text
         return tool_tip_text
 
-
-
     def check_tooltips(self):
         tool_tip_text_button = self.get_text_from_tooltip(self.locators.BUTTON, self.locators.TOOL_TIP_BUTTON)
         time.sleep(0.3)
         tool_tip_text_field = self.get_text_from_tooltip(self.locators.FIELD, self.locators.TOOL_TIP_FIELD)
         time.sleep(0.3)
-        tool_tip_text_contrary = self.get_text_from_tooltip(self.locators.CONTRARY_LINK, self.locators.TOOL_TIP_CONTRARY)
+        tool_tip_text_contrary = self.get_text_from_tooltip(self.locators.CONTRARY_LINK,
+                                                            self.locators.TOOL_TIP_CONTRARY)
         time.sleep(0.3)
         tool_tip_text_sections = self.get_text_from_tooltip(self.locators.SECTION_LINK, self.locators.TOOL_TIP_SECTION)
         time.sleep(0.3)
         return tool_tip_text_button, tool_tip_text_field, tool_tip_text_contrary, tool_tip_text_sections
-
 
 
 class MenuPage(BasePage):
@@ -219,3 +217,93 @@ class MenuPage(BasePage):
             self.action_move_to_element(item)
             data.append(item.text)
         return data
+
+
+class SelectMenuPage(BasePage):
+    locators = SelectMenuPageLocators()
+
+    def check_select_value(self):
+        single_select_values = [
+            "Group 1, option 1",
+            "Group 1, option 2",
+            "Group 2, option 1",
+            "Group 2, option 2",
+            "A root option",
+            "Another root option"
+        ]
+        random_value = single_select_values[random.randint(0, 5)]
+        single_select = self.element_is_visible(self.locators.SELECT_VALUE_DROPDOWN)
+        single_select.send_keys(random_value)
+        single_select.send_keys(Keys.RETURN)
+        current_value = self.element_is_present(self.locators.SELECT_VALUE_DROPDOWN_RESULT).text
+        return random_value, current_value
+
+    def check_select_one_value(self):
+        SELECT_ONE_VALUES = [
+            {"label": "Dr.", "value": "dr"},
+            {"label": "Mr.", "value": "mr"},
+            {"label": "Mrs.", "value": "mrs"},
+            {"label": "Ms.", "value": "ms"},
+            {"label": "Prof.", "value": "prof"},
+            {"label": "Other", "value": "other"}
+        ]
+
+        random_item = random.choice(SELECT_ONE_VALUES)
+        input_text = random_item[random.choice(["label", "value"])]
+        expected_text = random_item["label"]
+
+        dropdown_element = self.element_is_visible(self.locators.SELECT_ONE_DROPDOWN)
+        dropdown_element.send_keys(input_text)
+        dropdown_element.send_keys(Keys.RETURN)
+
+        selected_value = self.element_is_present(self.locators.SELECT_ONE_DROPDOWN_RESULT).text
+        return expected_text, selected_value
+
+    def check_old_style_select(self):
+        dropdown = Select(self.element_is_visible(self.locators.OLD_SELECT))
+        available_colors = next(generated_color()).color_name
+        random_color = random.choice(available_colors)
+
+        dropdown.select_by_visible_text(random_color)
+        selected_text = dropdown.first_selected_option.text
+
+        return selected_text, random_color
+
+    def check_multi_select(self):
+        MULTI_LIST = ["Green", "Blue", "Red", "Black"]
+
+        random_values = random.sample(MULTI_LIST, k=random.randint(1, len(MULTI_LIST)))
+
+        dropdown = self.element_is_visible(self.locators.MULTISELECT_DROPDOWN)
+
+        for value in random_values:
+            dropdown.send_keys(value)
+            dropdown.send_keys(Keys.RETURN)
+            time.sleep(0.3)
+
+        selected_elements = self.elements_are_visible(self.locators.MULTISELECT_DROPDOWN_RESULTS)
+        current_values = [el.text for el in selected_elements]
+
+        return random_values, current_values
+
+    def are_multiselected_items_removed(self):
+        remove_buttons = self.element_is_visible(self.locators.ALL_REMOVE_BUTTON)
+        remove_buttons.click()
+        is_removed = self.element_is_not_visible(self.locators.MULTISELECT_DROPDOWN_RESULTS)
+        return is_removed
+
+    def check_standart_multiselect(self):
+        standard_select_element = self.element_is_visible(self.locators.STANDART_SELECT)
+        self.go_to_element(standard_select_element)
+        select = Select(standard_select_element)
+
+        options_to_select = ["Volvo", "Saab", "Opel", "Audi"]
+
+        for option_text in options_to_select:
+            select.select_by_visible_text(option_text)
+
+        selected_options_elements = select.all_selected_options
+
+        actual_selected_texts = [option_element.text for option_element in selected_options_elements]
+
+        return options_to_select, actual_selected_texts

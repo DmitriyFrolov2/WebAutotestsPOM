@@ -13,3 +13,8 @@ Remove-Item -Recurse -Force tests\__pycache__, pages\__pycache__
 rm -rf tests/__pycache__ pages/__pycache__
 
 ```
+
+## Инспектирование исчезающего элемента
+```JS
+setTimeout(function() { debugger; }, 5000);
+```
