@@ -137,6 +137,11 @@ class BasePage:
     def action_drag_and_drop_by_offset(self, element, x_coords, y_coords):
         """
         Выполняет перетаскивание элемента на заданное смещение (координаты x и y).
+
+        Args:
+            element: Веб-элемент для перетаскивания.
+            x_coords: Смещение по оси X.
+            y_coords: Смещение по оси Y.
         """
         if element:
             action = ActionChains(self.driver)
@@ -249,4 +254,7 @@ class BasePage:
     def select_option_by_text(self, locator, value):
         select = Select(self.element_is_present(locator))
         select.select_by_visible_text(value)
+
+
+
 
