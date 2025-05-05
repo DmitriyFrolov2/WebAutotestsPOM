@@ -2,8 +2,10 @@ import os
 import random
 import time
 import base64
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
+import re
+import allure
+
+import requests
 
 from generator.generator import generated_person, generate_file
 from locators.elements_page_locators import TextBoxPageLocators, CheckBoxPageLocators, RadioButtonPageLocators, \
@@ -11,7 +13,7 @@ from locators.elements_page_locators import TextBoxPageLocators, CheckBoxPageLoc
     DynamicPropertiesPageLocators
 from pages.base_page import BasePage
 from selenium.common import TimeoutException
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.select import Select
 
 
 class TextBoxPage(BasePage):
@@ -75,6 +77,7 @@ class CheckBoxPage(BasePage):
 class RadioButtonPage(BasePage):
     locators = RadioButtonPageLocators()
 
+    @allure.step("Clicking on each button")
     def click_on_the_radio_button(self, choice):
         choices = {'yes': self.locators.YES_RADIOBUTTON,
                    'impressive': self.locators.IMPRESSIVE_RADIOBUTTON,
@@ -139,21 +142,23 @@ class WebTablePage(BasePage):
     def check_deleted_person(self):
         return self.element_is_present(self.locators.NO_ROWS_FOUND).text
 
-    def select_up_to_rows(self):
-        count = [5, 10, 20, 25, 50, 100]
-        data = []
-        for x in count:
-            count_row_button = self.element_is_visible(self.locators.COUNT_ROW_LIST)
-            self.go_to_element(count_row_button)
-            count_row_button.click()
-            self.element_is_visible((By.CSS_SELECTOR, f"option[value='{x}']")).click()
-            data.append(self.check_count_rows())
-            return data
+    @allure.step("Get number of rows")
+    def get_rows_count(self):
+        table_rows = self.elements_are_present(self.locators.FULL_PERSON_LIST)
+        return len(table_rows)
 
-    def check_count_rows(self):
-        list_rows = self.elements_are_present(
-            self.locators.FULL_PERSON_LIST)
-        return len(list_rows)
+    @allure.step("Select from rows dropdown")
+    def select_from_rows_dropdown(self):
+        rows_numbers = [5, 10, 20]
+        data = []
+        for number in rows_numbers:
+            rows_dropdown = self.element_is_visible(self.locators.COUNT_ROW_LIST)
+            self.go_to_element(rows_dropdown)
+            rows_dropdown.click()
+            time.sleep(0.2)
+            Select(rows_dropdown).select_by_value(str(number))
+            data.append(self.get_rows_count())
+        return data
 
 
 class ButtonsPage(BasePage):
@@ -189,155 +194,92 @@ class ButtonsPage(BasePage):
 class LinksPage(BasePage):
     locators = LinksPageLocators()
 
-    def check_simple_link_opens_new_tab(self, wait_timeout=10):  # Добавим параметр таймаута ожидания
-        """
-        Находит 'Home' ссылку, проверяет ее статус-код,
-        если 200, открывает в новой вкладке с помощью JS,
-        переключается на нее, ЖДЕТ ЗАГРУЗКИ URL и возвращает
-        исходный href и URL новой вкладки.
-        Возвращает (href, status_code) если статус не 200.
-        """
-        simple_link_element = self.element_is_visible(self.locators.SIMPLE_LINK)
-        if not simple_link_element:
-            print("Не найдена 'Home' ссылка (SIMPLE_LINK)")
-            return None, "Element Not Found"
+    API_CALL_URLS = [
+        'created',
+        'no-content',
+        'moved',
+        'bad-request',
+        'unauthorized',
+        'forbidden',
+        'invalid-url'
+    ]
 
-        link_href = simple_link_element.get_attribute('href')
-        if not link_href:
-            print("У 'Home' ссылки нет атрибута href")
-            return None, "Href Not Found"
+    @allure.step("Getting response from home link")
+    def check_home_link(self):
+        home_link = self.element_is_visible(self.locators.HOME_LINK)
+        home_link_href = home_link.get_attribute("href")
+        response = requests.get(home_link_href)
 
-        # --- Проверка статуса ---
-        # Убедимся, что href валиден для запроса
-        if not link_href.startswith('http'):
-            print(f"Href '{link_href}' не является URL, статус не проверяется.")
-
-            status_code = 200
+        if response.status_code == 200:
+            home_link.click()
+            time.sleep(2)
+            self.switch_tab_by_handle(1)
+            current_url = self.driver.current_url
+            return home_link_href, current_url  # Кортеж из двух строк
         else:
-            status_code = self.get_status_code(link_href)
+            return f'Invalid status code. Response status code: {response.status_code}. Link href: {home_link_href}'
 
-        # --- Логика открытия вкладки ---
-        if status_code == 200:
-            print(
-                f"Ссылка '{link_href}' (или элемент без URL) считается готовой к открытию. Открываем в новой вкладке.")
-            initial_window_count = len(self.driver.window_handles)  # Запоминаем количество окон
+    @allure.step("Getting responses from links")
+    def check_api_call_links(self):
+        api_call_locators = self.locators.API_CALL_LINKS
+        api_call_links = [self.element_is_visible(link_locator) for link_locator in api_call_locators]
+        status_codes = []
+        messages = []
+        for api_call_link in api_call_links:
+            self.go_to_element(api_call_link)
+            api_call_link.click()
+            time.sleep(1)
+            response_text = self.element_is_present(self.locators.LINK_RESPONSE, ).text
+            response_statuscode = re.search(r'\d+', response_text).group()
+            message = response_text[50:].lower()
 
-            # Открываем вручную через JS
-            self.execute_script(f"window.open('{link_href}', '_blank');")
+            status_codes.append(response_statuscode)
+            messages.append(message)
+        return status_codes, messages
 
-            # --- Ожидание новой вкладки ---
-            try:
-                print("Ожидание открытия новой вкладки...")
-                WebDriverWait(self.driver, wait_timeout).until(
-                    EC.number_of_windows_to_be(initial_window_count + 1)
-                )
-                print("Новая вкладка обнаружена.")
-            except TimeoutException:
-                print(f"Новая вкладка не открылась за {wait_timeout} секунд.")
-                return link_href, "New Tab Did Not Open"
+    @allure.step("Getting response codes from links")
+    def send_calls_get_status_code(self):
+        api_call_urls = [f'https://demoqa.com/{link}' for link in self.API_CALL_URLS]
+        response_codes = []
+        for url in api_call_urls:
+            response = requests.get(url)
+            response_codes.append(str(response.status_code))
+        return response_codes
 
-            # --- Переключение на новую вкладку ---
-            self.switch_to_new_tab()  # Используем метод из BasePage
-
-            # --- ОЖИДАНИЕ ЗАГРУЗКИ URL (КЛЮЧЕВОЕ ИЗМЕНЕНИЕ) ---
-            try:
-                print(f"Ожидание изменения URL с 'about:blank' в новой вкладке (макс. {wait_timeout} сек)...")
-                # Ждем, пока URL перестанет быть 'about:blank' ИЛИ станет равен link_href
-                # Лямбда - это как сокращенная запись для простой функции, которая сразу возвращает результат одного вычисления
-                WebDriverWait(self.driver, wait_timeout).until(
-                    lambda driver: driver.current_url != 'about:blank' and driver.current_url.startswith('http')
-
-                )
-                current_url = self.get_current_url()
-                print(f"URL в новой вкладке загружен: {current_url}")
-
-                # Дополнительная проверка на всякий случай
-                if current_url == 'about:blank':
-                    print("!!! Ошибка: URL остался 'about:blank' после ожидания.")
-                    return link_href, "URL Did Not Load Properly"
-
-                return link_href, current_url  # возвращаем href и загруженный URL
-
-            except TimeoutException:
-                final_url = self.get_current_url()  # Получаем URL, который есть на момент таймаута
-                print(
-                    f"Тайм-аут ({wait_timeout} сек) ожидания загрузки URL в новой вкладке. Финальный URL: {final_url}")
-                # Возвращаем то, что есть, чтобы тест показал реальный результат
-                return link_href, final_url
-
-        else:
-            # Если статус был не 200 (и это был валидный URL)
-            print(f"Ссылка '{link_href}' вернула статус {status_code}. Новая вкладка не открывалась.")
-            return link_href, status_code  # Возвращаем href и статус-код ошибки
-
-    def get_link_status_via_request(self, locator):
-        """
-        Находит элемент по локатору, получает его href
-        и возвращает статус-код, полученный через requests.
-        """
-        link_element = self.element_is_present(locator)  # Используем present, т.к. элемент может быть не видим
-        if not link_element:
-            print(f"Не найден элемент по локатору: {locator}")
-            return None
-
-        link_href = link_element.get_attribute('href')
-        if not link_href:
-            print(f"У элемента {locator} нет атрибута href")
-            return None
-
-        print(f"Проверяем статус для URL: {link_href}")
-        status_code = self.get_status_code(link_href)
-        return status_code
-
-    def click_api_link_and_get_response_text(self, locator):
-        """
-        Кликает по ссылке, которая должна вызвать API-запрос (без навигации),
-        ожидает появления ответа на странице и возвращает текст ответа.
-        """
-        link_element = self.element_is_visible(locator)
-        if not link_element:
-            print(f"Не найден кликабельный элемент по локатору: {locator}")
-            return None
-
-        # Запоминаем текущий текст ответа, чтобы дождаться его изменения
-        initial_response_text = self.get_element_text(self.locators.LINK_RESPONSE)
-
-        link_element.click()
-
-        # Ждем, пока текст в блоке ответа изменится или появится
-
-        try:
-            WebDriverWait(self.driver, 10).until(
-                lambda driver: self.get_element_text(self.locators.LINK_RESPONSE) != initial_response_text and \
-                               self.get_element_text(self.locators.LINK_RESPONSE) is not None
-            )
-        except TimeoutException:
-            print("Текст ответа не появился или не изменился после клика.")
-            # Возвращаем текущий текст, даже если он не изменился
-            return self.get_element_text(self.locators.LINK_RESPONSE)
-
-        response_text = self.get_element_text(self.locators.LINK_RESPONSE)
-        print(f"Получен ответ после клика по {locator}: '{response_text}'")
-        return response_text
+    @allure.step("Getting text of links")
+    def get_api_call_links_text(self) -> list[str]:
+        api_call_locators = self.locators.API_CALL_LINKS
+        api_call_links = [self.element_is_visible(link_locator) for link_locator in api_call_locators]
+        api_call_links_text = self.get_text_from_webelements(api_call_links)
+        return api_call_links_text
 
 
 class UploadAndDownloadPage(BasePage):
     locators = UploadAndDownloadPageLocators()
 
+    @allure.step("Uploading generated file")
     def upload_file(self):
-        """Загружает файл и возвращает его имя"""
-        file_name = generate_file()
-        path = os.path.join(os.getcwd(), "downloads", file_name)
-        self.element_is_visible(self.locators.UPLOAD_FILE).send_keys(path)
-        os.remove(path)
-        return file_name
 
+        file_name = generate_file()
+        downloads_dir = os.path.join(os.getcwd(), "downloads")
+        path = os.path.join(downloads_dir, file_name)
+
+        try:
+            self.element_is_visible(self.locators.UPLOAD_FILE).send_keys(path)
+            return file_name
+        finally:
+            if os.path.exists(path):
+                os.remove(path)
+
+    @allure.step("Getting uploaded file name from page")
     def get_uploaded_file_name(self):
+
         uploaded_text = self.element_is_present(self.locators.UPLOADED_RESULT).text
         return os.path.basename(uploaded_text)
 
+    @allure.step("Downloading test file")
     def download_file(self):
-        """Скачивает файл и проверяет его наличие"""
+
         link = self.element_is_present(self.locators.DOWNLOAD_FILE).get_attribute('href')
         link_b = base64.b64decode(link)
 
@@ -359,7 +301,7 @@ class UploadAndDownloadPage(BasePage):
 class DynamicPropertiesPage(BasePage):
     locators = DynamicPropertiesPageLocators()
 
-
+    @allure.step("Checking if button becomes enabled")
     def check_enable_button(self):
         try:
             self.element_is_clickable(self.locators.ENABLE_BUTTON)
@@ -367,8 +309,7 @@ class DynamicPropertiesPage(BasePage):
             return False
         return True
 
-
-
+    @allure.step("Checking button color change")
     def check_changed_of_color(self):
         color_button = self.element_is_present(self.locators.COLOR_CHANGE_BUTTON)
         color_button_before = color_button.value_of_css_property('color')
@@ -376,14 +317,10 @@ class DynamicPropertiesPage(BasePage):
         color_button_after = color_button.value_of_css_property('color')
         return color_button_before, color_button_after
 
-
+    @allure.step("Checking if button appears after delay")
     def check_appear_of_button(self):
         try:
             self.element_is_visible(self.locators.VISIBLE_AFTER_FIVE_SEC_BUTTON)
         except TimeoutException:
             return False
         return True
-
-
-
-

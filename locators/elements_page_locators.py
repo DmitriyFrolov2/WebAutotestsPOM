@@ -71,21 +71,26 @@ class ButtonsPageLocators:
 
 
 class LinksPageLocators:
-    # Links that navigate
-    SIMPLE_LINK = (By.XPATH, "//a[@id='simpleLink']") # Home
-    DYNAMIC_LINK = (By.XPATH, "//a[@id='dynamicLink']") # HomeXXXX
+    ALL_LINKS = (By.CSS_SELECTOR, '#linkWrapper > p > a')
+    HOME_LINK = (By.ID, 'simpleLink')
+    CREATED = (By.ID, 'created')
+    NO_CONTENT = (By.ID, 'no-content')
+    MOVED = (By.ID, 'moved')
+    BAD_REQUEST = (By.ID, 'bad-request')
+    UNAUTHORIZED = (By.ID, 'unauthorized')
+    FORBIDDEN = (By.ID, 'forbidden')
+    NOT_FOUND = (By.ID, 'invalid-url')
+    LINK_RESPONSE = (By.CSS_SELECTOR, '[id="linkResponse"]')
 
-    # Links that trigger API calls
-    CREATED_LINK = (By.XPATH, "//a[@id='created']")
-    NO_CONTENT_LINK = (By.XPATH, "//a[@id='no-content']")
-    MOVED_LINK = (By.XPATH, "//a[@id='moved']")
-    BAD_REQUEST_LINK = (By.XPATH, "//a[@id='bad-request']")
-    UNAUTHORIZED_LINK = (By.XPATH, "//a[@id='unauthorized']")
-    FORBIDDEN_LINK = (By.XPATH, "//a[@id='forbidden']")
-    NOT_FOUND_LINK = (By.XPATH, "//a[@id='invalid-url']")
-
-    # Output area
-    LINK_RESPONSE = (By.XPATH, "//p[@id='linkResponse']")
+    API_CALL_LINKS = [
+        CREATED,
+        NO_CONTENT,
+        MOVED,
+        BAD_REQUEST,
+        UNAUTHORIZED,
+        FORBIDDEN,
+        NOT_FOUND
+    ]
 
 
 class UploadAndDownloadPageLocators:

@@ -4,7 +4,7 @@ from selenium.webdriver.support.ui import WebDriverWait as wait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.select import Select
 
-import requests
+
 from selenium.webdriver.support.wait import WebDriverWait
 
 
@@ -12,8 +12,6 @@ class BasePage:
     def __init__(self, driver, url):
         self.driver = driver
         self.url = url
-
-
 
     def open(self):
         """
@@ -26,18 +24,17 @@ class BasePage:
         Проверяет, виден ли элемент на странице в течение заданного времени ожидания.
         """
 
-        present_element = self.element_is_present(locator, timeout) # Сначала убедимся, что элемент есть в DOM
+        present_element = self.element_is_present(locator, timeout)  # Сначала убедимся, что элемент есть в DOM
         if present_element:
-             self.go_to_element(present_element)
-             try:
-                 return wait(self.driver, timeout).until(EC.visibility_of_element_located(locator))
-             except TimeoutException:
-                 print(f"Элемент не стал видимым за {timeout} секунд по локатору: {locator}")
-                 return None
+            self.go_to_element(present_element)
+            try:
+                return wait(self.driver, timeout).until(EC.visibility_of_element_located(locator))
+            except TimeoutException:
+                print(f"Элемент не стал видимым за {timeout} секунд по локатору: {locator}")
+                return None
         else:
-             print(f"Элемент не найден в DOM для проверки видимости: {locator}")
-             return None
-
+            print(f"Элемент не найден в DOM для проверки видимости: {locator}")
+            return None
 
     def elements_are_visible(self, locator, timeout=5):
         """
@@ -47,7 +44,7 @@ class BasePage:
             return wait(self.driver, timeout).until(EC.visibility_of_all_elements_located(locator))
         except TimeoutException:
             print(f"Не все элементы стали видимыми за {timeout} секунд по локатору: {locator}")
-            return [] # Возвращаем пустой список при тайм-ауте
+            return []  # Возвращаем пустой список при тайм-ауте
 
     def element_is_present(self, locator, timeout=5):
         """
@@ -62,7 +59,8 @@ class BasePage:
 
     def elements_are_present(self, locator, timeout=5):
         """
-        Проверяет, присутствуют ли все элементы, соответствующие локатору, в DOM-дереве страницы в течение заданного времени ожидания.
+        Проверяет, присутствуют ли все элементы, соответствующие локатору,
+        в DOM-дереве страницы в течение заданного времени ожидания.
         Не обязательно, чтобы элементы были видимыми.
         """
         try:
@@ -78,10 +76,10 @@ class BasePage:
         try:
             return wait(self.driver, timeout).until(EC.invisibility_of_element_located(locator))
         except TimeoutException:
-             # Если элемент так и не стал невидимым (т.е. остался видимым или не появился),
-             # то условие не выполнилось. В зависимости от логики, можно вернуть False или поднять ошибку.
-             print(f"Элемент остался видимым или не появился за {timeout} секунд по локатору: {locator}")
-             return False # Условие невидимости не выполнено
+            # Если элемент так и не стал невидимым (т.е. остался видимым или не появился),
+            # то условие не выполнилось. В зависимости от логики, можно вернуть False или поднять ошибку.
+            print(f"Элемент остался видимым или не появился за {timeout} секунд по локатору: {locator}")
+            return False  # Условие невидимости не выполнено
 
     def element_is_clickable(self, locator, timeout=10):
         """
@@ -109,7 +107,6 @@ class BasePage:
         WebDriverWait(self.driver, timeout).until(EC.element_to_be_clickable(locator))
         element.click()
 
-
     def action_double_click(self, element):
         """
         Выполняет двойной щелчок мышью по указанному элементу.
@@ -122,7 +119,6 @@ class BasePage:
         else:
             print("Невозможно выполнить двойной клик: элемент не найден (None).")
 
-
     def action_right_click(self, element):
         """
         Выполняет щелчок правой кнопкой мыши по указанному элементу.
@@ -132,7 +128,7 @@ class BasePage:
             action.context_click(element)
             action.perform()
         else:
-             print("Невозможно выполнить правый клик: элемент не найден (None).")
+            print("Невозможно выполнить правый клик: элемент не найден (None).")
 
     def action_drag_and_drop_by_offset(self, element, x_coords, y_coords):
         """
@@ -163,8 +159,7 @@ class BasePage:
             action.drag_and_drop(what, where)
             action.perform()
         else:
-             print("Невозможно выполнить drag and drop: один или оба элемента не найдены.")
-
+            print("Невозможно выполнить drag and drop: один или оба элемента не найдены.")
 
     def action_move_to_element(self, element):
         """
@@ -176,34 +171,6 @@ class BasePage:
             action.perform()
         else:
             print("Невозможно переместить курсор: элемент не найден (None).")
-
-    def remove_footer(self):
-
-        self.driver.execute_script("document.getElementByTagName('footer')[0].remove();")
-        self.driver.execute_script("document.getElementById('close-fixedban').remove();")
-
-    def get_status_code(self, url, timeout=10):
-        """
-        Отправляет GET-запрос на указанный URL и возвращает его HTTP статус-код.
-        Использует библиотеку requests. Включает User-Agent и обработку исключений.
-
-        Args:
-            url (str): URL для проверки.
-            timeout (int): Время ожидания ответа в секундах.
-
-        Returns:
-            int | None: Статус-код HTTP или None в случае ошибки запроса.
-        """
-        try:
-            """Можно добавить User-Agent, чтобы имитировать браузер и уменьшить вероятность блокировки
-            headers = {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-            }"""
-            response = requests.get(url, timeout=timeout) #headers=headers, allow_redirects=True, verify=False  verify=False может быть нужен для self-signed сертификатов
-            return response.status_code
-        except requests.exceptions.RequestException as e:
-            print(f"Ошибка при выполнении GET-запроса к URL '{url}': {e}")
-            return None # Возвращаем None при любой ошибке запроса
 
     def get_element_text(self, locator, timeout=5):
         """
@@ -223,13 +190,6 @@ class BasePage:
             print(f"Элемент не стал видимым для получения текста за {timeout} секунд по локатору: {locator}")
             return None
 
-
-    def get_current_url(self):
-        """
-        Возвращает URL текущей активной вкладки/окна.
-        """
-        return self.driver.current_url
-
     def execute_script(self, script, *args):
         """
         Выполняет переданный JavaScript в контексте текущего окна или фрейма.
@@ -242,19 +202,15 @@ class BasePage:
     def go_to_new_window(self, index):
         self.driver.switch_to.window(self.driver.window_handles[index])
 
-
     def go_to_frame(self, locator):
         self.driver.switch_to.frame(locator)
-
-
-    def go_to_default_content(self):
-        self.driver.switch_to.default_content()
-
 
     def select_option_by_text(self, locator, value):
         select = Select(self.element_is_present(locator))
         select.select_by_visible_text(value)
 
+    def switch_tab_by_handle(self, handle):
+        self.driver.switch_to.window(self.driver.window_handles[handle])
 
-
-
+    def get_text_from_webelements(self, elements):
+        return [element.text.lower() for element in elements]
