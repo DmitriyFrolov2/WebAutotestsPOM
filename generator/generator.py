@@ -35,7 +35,7 @@ def generate_file():
     with open(path, 'w+') as file:
         file.write("Hello World")
 
-    return file_name, path
+    return file_name
 
 
 def generate_subject():

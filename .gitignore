@@ -179,3 +179,6 @@ cython_debug/
 !/extensions/profiles/firefox/addons.json
 !/extensions/profiles/firefox/addonStartup.json.lz4
 !/extensions/profiles/firefox/extensions/
+
+# Игнорировать папку allure_results
+tests/allure_results/

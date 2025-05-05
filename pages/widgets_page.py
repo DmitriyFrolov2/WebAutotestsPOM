@@ -28,13 +28,13 @@ class AccordianPage(BasePage):
                           'content': self.locators.SECTION_CONTENT_THIRD},
                      }
 
-        section_title = self.element_is_visible(accordian[accordian_num]['title'])
+        section_title = self.element_element_is_visible(accordian[accordian_num]['title'])
         section_title.click()
         try:
-            section_content = self.element_is_visible(accordian[accordian_num]['content']).text
+            section_content = self.element_element_is_visible(accordian[accordian_num]['content']).text
         except TimeoutException:
             section_title.click()
-            section_content = self.element_is_visible(accordian[accordian_num]['content']).text
+            section_content = self.element_element_is_visible(accordian[accordian_num]['content']).text
         return [section_title.text, len(section_content)]
 
 
@@ -92,7 +92,7 @@ class AutoCompletePage(BasePage):
         return color[0]
 
     def check_color_in_single(self):
-        color = self.element_is_visible(self.locators.SINGLE_VALUE)
+        color = self.element_element_is_visible(self.locators.SINGLE_VALUE)
         return color.text
 
 
