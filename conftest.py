@@ -12,6 +12,10 @@ from webdriver_manager.chrome import ChromeDriverManager
 EXTENSIONS_DIR = Path(__file__).parent / "extensions"
 FIREFOX_PROFILE_PATH = EXTENSIONS_DIR / "profiles" / "firefox"
 
+PROJECT_ROOT = Path(__file__).resolve().parent
+DOWNLOADS_DIR = PROJECT_ROOT / "tests" / "downloads"
+PICTURE_PATH = DOWNLOADS_DIR / "picture.jpg"
+
 # Настройки для скачивания файлов
 preferences = {
     "download.default_directory": str(Path.cwd() / "downloads"),
