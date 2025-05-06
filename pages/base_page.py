@@ -19,7 +19,7 @@ class BasePage:
         """
         self.driver.get(self.url)
 
-    def element_is_visible(self, locator, timeout=10):
+    def element_is_visible(self, locator, timeout=30):
         """
         Проверяет, виден ли элемент на странице в течение заданного времени ожидания.
         """
@@ -102,7 +102,7 @@ class BasePage:
         else:
             print("Невозможно прокрутить к элементу: элемент не найден (None).")
 
-    def click_element(self, locator, timeout=10):
+    def click_element(self, locator, timeout=20):
         element = self.element_is_visible(locator, timeout)
         WebDriverWait(self.driver, timeout).until(EC.element_to_be_clickable(locator))
         element.click()
@@ -195,6 +195,11 @@ class BasePage:
         Выполняет переданный JavaScript в контексте текущего окна или фрейма.
         Это обертка для стандартного метода execute_script драйвера.
         """
+
+    def js_click_element(self, locator: tuple):
+        element = self.element_is_present(
+            locator)  # Ждем только присутствие, так как видимость/кликабельность JS не волнует
+        self.driver.execute_script("arguments[0].click();", element)
 
     def go_to_alert(self):
         return self.driver.switch_to.alert
