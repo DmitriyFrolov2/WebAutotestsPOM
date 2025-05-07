@@ -34,7 +34,7 @@ def pytest_addoption(parser):
     )
 
 
-# Фикстура для ручной установки Chrome как браузера
+# Фикстура для ручной установки Chrome как браузера. @pytest.mark.usefixtures("chrome_only")
 @pytest.fixture()
 def chrome_only(request):
     request.config._browser = "chrome"
