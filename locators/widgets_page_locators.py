@@ -2,12 +2,12 @@ from selenium.webdriver.common.by import By
 
 
 class AccordianPageLocators:
-    SECTION_FIRST = (By.XPATH, "//div[@id='section1Heading']")
-    SECTION_CONTENT_FIRST = (By.XPATH, "//div[@id='section1Content']//p")
-    SECTION_SECOND = (By.XPATH, "//div[@id='section2Heading']")
-    SECTION_CONTENT_SECOND = (By.XPATH, "//div[@id='section2Content']//p")
-    SECTION_THIRD = (By.XPATH, "//div[@id='section3Heading']")
-    SECTION_CONTENT_THIRD = (By.XPATH, "//div[@id='section3Content']//p")
+    SECTION_FIRST = (By.CSS_SELECTOR, 'div[id="section1Heading"]')
+    SECTION_CONTENT_FIRST = (By.CSS_SELECTOR, 'div[id="section1Content"]')
+    SECTION_SECOND = (By.CSS_SELECTOR, 'div[id="section2Heading"]')
+    SECTION_CONTENT_SECOND = (By.CSS_SELECTOR, 'div[id="section2Content"]')
+    SECTION_THIRD = (By.CSS_SELECTOR, 'div[id="section3Heading"]')
+    SECTION_CONTENT_THIRD = (By.CSS_SELECTOR, 'div[id="section3Content"]')
 
 
 class AutocompletePageLocators:
@@ -58,7 +58,7 @@ class ToolTipsPageLocators:
     TOOL_TIP_BUTTON = (By.CSS_SELECTOR, 'button[aria-describedby="buttonToolTip"]')
 
     FIELD = (By.CSS_SELECTOR, 'input[id="toolTipTextField"]')
-    TOOL_TIP_FIELD = (By.XPATH, "//div[text()='You hovered over the text field']")
+    TOOL_TIP_FIELD = (By.XPATH, "//div[@class='tooltip-inner' and text()='You hovered over the text field']")
 
     CONTRARY_LINK = (By.XPATH, "//a[text()='Contrary']")
     TOOL_TIP_CONTRARY = (By.CSS_SELECTOR, 'a[aria-describedby="contraryTexToolTip"]')
