@@ -1,0 +1,64 @@
+name: Run Selected Tests and Publish Allure Report
+
+on:
+  workflow_dispatch:
+    inputs:
+      test_file:
+        description: 'Select which test file to run'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - alerts_frame_windows_test.py
+          - elements_test.py
+          - form_test.py
+          - interactions_test.py
+          - widgets_test.py
+
+jobs:
+  test-and-publish:
+    runs-on: ubuntu-22.04
+
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r WebAutotestsPOM/WebAutotestsPOM/requirements.txt
+
+    - name: Install Allure CLI
+      run: |
+        sudo apt-add-repository ppa:qameta/allure -y
+        sudo apt-get update
+        sudo apt-get install allure
+
+    - name: Run selected tests with Allure
+      working-directory: WebAutotestsPOM/WebAutotestsPOM
+      run: |
+        if [ "${{ github.event.inputs.test_file }}" = "all" ]; then
+          pytest tests --alluredir=tests/allure_results
+        else
+          pytest tests/${{ github.event.inputs.test_file }} --alluredir=tests/allure_results
+        fi
+
+    - name: Generate Allure Report
+      working-directory: WebAutotestsPOM/WebAutotestsPOM
+      run: |
+        allure generate tests/allure_results -o allure-report
+
+    - name: Deploy Allure Report to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v4
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./allure-report
