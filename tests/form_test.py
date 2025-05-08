@@ -1,6 +1,6 @@
 import allure
 from pages.form_page import FormPage
-Import pytest
+import pytest
 
 
 @pytest.mark.usefixtures("chrome_only")
