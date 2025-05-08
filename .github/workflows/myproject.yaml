@@ -39,9 +39,9 @@ jobs:
 
     - name: Install Allure CLI
       run: |
-        sudo apt-add-repository ppa:qameta/allure -y
-        sudo apt-get update
-        sudo apt-get install allure
+        wget https://github.com/allure-framework/allure2/releases/download/2.23.1/allure-2.23.1.tgz
+        tar -zxvf allure-2.23.1.tgz -C /opt/
+        sudo ln -s /opt/allure-2.23.1/bin/allure /usr/bin/allure
 
     - name: Run selected tests with Allure
       working-directory: WebAutotestsPOM
