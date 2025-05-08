@@ -1,5 +1,4 @@
 import allure
-
 from pages.interactions_page import SortablePage, SelectablePage, ResizablePage, DroppablePage, DraggablePage
 
 
@@ -14,6 +13,7 @@ class TestSortablePage:
         assert list_before != list_after, 'порядок списка не изменился'
         assert grid_before != grid_after, 'порядок сетки не изменился'
 
+
 @allure.feature('Selectable Page')
 class TestSelectablePage:
     @allure.title('Check changed sortable list and grid')
@@ -24,6 +24,7 @@ class TestSelectablePage:
         item_grid = selectable_page.select_grid_item()
         assert len(item_list) > 0, "не выбрано ни одного элемента"
         assert len(item_grid) > 0, "не выбрано ни одного элемента"
+
 
 @allure.feature('Resizable Page')
 class TestResizablePage:
@@ -36,6 +37,7 @@ class TestResizablePage:
         assert ('500px', '300px') == max_box, "максимальный размер не равен '500px', '300px'"
         assert ('150px', '150px') == min_box, "минимальный размер не равен '150px', '150px'"
         assert min_resize != max_resize, "размер изменяемого элемента не изменился"
+
 
 @allure.feature('Droppable Page')
 class TestDroppablePage:
@@ -62,6 +64,7 @@ class TestDroppablePage:
         not_will_after_move, not_will_after_revert = droppable_page.drop_revert_draggable('not_will')
         assert will_after_move != will_after_revert, 'элемент не вернулся в исходное положение'
         assert not_will_after_move == not_will_after_revert, 'элемент вернулся в исходное положение'
+
 
 @allure.feature('Draggable Page')
 class TestDraggablePage:

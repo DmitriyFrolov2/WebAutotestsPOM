@@ -1,9 +1,7 @@
 import random
 import re
 import time
-
 import allure
-
 from locators.interactions_page_locators import SortablePageLocators, SelectablePageLocators, ResizablePageLocators, \
     DroppablePageLocators, DraggablePageLocators
 from pages.base_page import BasePage
