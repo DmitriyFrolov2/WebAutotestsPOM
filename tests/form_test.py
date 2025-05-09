@@ -1,6 +1,7 @@
 import allure
-from pages.form_page import FormPage
 import pytest
+from pages.form_page import FormPage
+
 @allure.feature("Форма регистрации")
 class TestFormPage:
     @pytest.mark.usefixtures("chrome_only")
@@ -14,5 +15,3 @@ class TestFormPage:
         displayed_results = form_page.form_result()
         assert (displayed_results[0], displayed_results[1]) == \
                (f"{submitted_data.firstname} {submitted_data.lastname}", submitted_data.email)
-
-
