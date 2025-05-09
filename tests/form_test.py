@@ -1,8 +1,9 @@
 import allure
 from pages.form_page import FormPage
-
+import pytest
 @allure.feature("Форма регистрации")
 class TestFormPage:
+    @pytest.mark.usefixtures("chrome_only")
     @allure.title("Проверка успешной отправки формы")
     def test_form_page(self, driver):
         form_page = FormPage(driver, 'https://demoqa.com/automation-practice-form')
