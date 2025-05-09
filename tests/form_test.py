@@ -1,9 +1,9 @@
 import allure
 from pages.form_page import FormPage
-import pytest
 
 
-@pytest.mark.usefixtures("chrome_only")
+
+
 @allure.feature("Форма регистрации")
 class TestFormPage:
     @allure.title("Проверка успешной отправки формы")
