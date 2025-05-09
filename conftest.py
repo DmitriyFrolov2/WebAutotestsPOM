@@ -65,6 +65,9 @@ def driver(request):
 
     elif browser_name == "chrome":
         options = ChromeOptions()
+        options.add_argument("--headless=new")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
         chrome_prefs = {
             "download.default_directory": preferences["download.default_directory"],
             "download.prompt_for_download": preferences["download.prompt_for_download"],
