@@ -25,7 +25,7 @@ preferences = {
 }
 
 
-# Добавляем пользовательскую опцию запуска браузера
+# Опции для запуска браузера
 def pytest_addoption(parser):
     parser.addoption(
         "--browser",
