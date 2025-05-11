@@ -14,6 +14,7 @@ class Person():
     permanent_address: str = None
     mobile: str = None
 
+
 @dataclass
 class Color:
     color_name: list = None
@@ -25,4 +26,3 @@ class Data:
     month: str = None
     year: str = None
     time: str = None
-

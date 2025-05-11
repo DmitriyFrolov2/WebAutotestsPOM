@@ -30,7 +30,7 @@ def pytest_addoption(parser):
     parser.addoption(
         "--browser",
         action="store",
-        default="chrome",  # по умолчанию запускается Firefox
+        default="firefox",  # по умолчанию запускается Firefox
     )
 
 
@@ -48,7 +48,7 @@ def driver(request):
 
     if browser_name == "firefox":
         options = FirefoxOptions()
-        #options.binary_location = "/usr/bin/firefox" - для Linux
+        # options.binary_location = "/usr/bin/firefox" - для Linux
 
         # Указываем путь к профилю через аргумент командной строки
         options.add_argument("-profile")

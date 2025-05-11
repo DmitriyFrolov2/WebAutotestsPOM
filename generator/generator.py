@@ -69,9 +69,9 @@ def generated_color():
 
 def generated_date():
     yield Data(
-        year = fake_en.year(),
-        month = fake_en.month_name(),
-        day = fake_en.day_of_month(),
-        time = fake_en.time(),
+        year=fake_en.year(),
+        month=fake_en.month_name(),
+        day=fake_en.day_of_month(),
+        time=fake_en.time(),
 
     )

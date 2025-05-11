@@ -47,7 +47,7 @@ class TestAutoCompletePage:
         auto_complete_page.open()
         auto_complete_page.fill_input_multi()
         is_removed = auto_complete_page.clear_all_from_multi()
-        assert is_removed == True, 'Элемент не удалён'
+        assert is_removed== True, 'Элемент не удалён'
 
     @allure.title('Check deletions from the single autocomplete')
     def test_fill_single_autocomplete(self, driver):
@@ -124,6 +124,7 @@ class TestToolsTipsPage:
         assert field_text == 'You hovered over the text field', 'Hover отсутствует или неверное содержание'
         assert contrary_text == 'You hovered over the Contrary', 'Hover отсутствует или неверное содержание'
         assert section_text == 'You hovered over the 1.10.32', 'Hover отсутствует или неверное содержание'
+
 
 @allure.feature('MenuPage')
 class TestMenuPage:

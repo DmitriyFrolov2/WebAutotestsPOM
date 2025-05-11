@@ -170,8 +170,8 @@ class TabsPage(BasePage):
     @allure.step('check tabs')
     def check_tabs(self, name_tab):
         tabs = {'what':
-                    {'title': self.locators.TABS_WHAT,
-                     'content': self.locators.TABS_WHAT_CONTENT},
+                {'title': self.locators.TABS_WHAT,
+                 'content': self.locators.TABS_WHAT_CONTENT},
                 'origin':
                     {'title': self.locators.TABS_ORIGIN,
                      'content': self.locators.TABS_ORIGIN_CONTENT},

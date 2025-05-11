@@ -7,6 +7,7 @@ import random
 import time
 import allure
 
+
 class FormPage(BasePage):
     locators = FormPageLocators()
 

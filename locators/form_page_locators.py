@@ -1,4 +1,4 @@
-from random import randint
+
 
 from selenium.webdriver.common.by import By
 
@@ -8,14 +8,14 @@ class FormPageLocators:
     FIRST_NAME = (By.CSS_SELECTOR, '#firstName')
     LAST_NAME = (By.CSS_SELECTOR, '#lastName')
     EMAIL = (By.CSS_SELECTOR, '#userEmail')
-    #GENDER = (By.CSS_SELECTOR, f"div[class*='custom-control'] label[for='gender-radio-{randint(1, 3)}']")
+    # GENDER = (By.CSS_SELECTOR, f"div[class*='custom-control'] label[for='gender-radio-{randint(1, 3)}']")
     GENDER_MALE = (By.XPATH, "//label[@for='gender-radio-3']")
     GENDER_FEMALE = (By.CSS_SELECTOR, "input[id='gender-radio-2']")
     GENDER_OTHER = (By.CSS_SELECTOR, "input[id='gender-radio-3']")
     MOBILE = (By.CSS_SELECTOR, "input[id='userNumber']")
     DATE_OF_BIRTH = (By.CSS_SELECTOR, 'id="dateOfBirthInput"')
     SUBJECT = (By.CSS_SELECTOR, 'input[id="subjectsInput"]')
-    #HOBBIES = (By.XPATH, "//*[contains(@class, 'custom-checkbox') and .//*[contains(.,'Sports')]]//label")
+    # HOBBIES = (By.XPATH, "//*[contains(@class, 'custom-checkbox') and .//*[contains(.,'Sports')]]//label")
 
     HOBBY_SPORT = (By.XPATH, "//*[contains(@class, 'custom-checkbox') and .//*[contains(.,'Sports')]]//label")
     HOBBY_READING = (By.XPATH, "//*[contains(@class, 'custom-checkbox') and .//*[contains(.,'Reading')]]//label")

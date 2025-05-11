@@ -37,6 +37,7 @@ class SliderPageLocators:
     SLIDER_INPUT = (By.CSS_SELECTOR, 'input[class="range-slider range-slider--primary"]')
     SLIDER_VALUE = (By.CSS_SELECTOR, 'input[id="sliderValue"]')
 
+
 class ProgressBarPageLocators:
     PROGRESS_BAR_BUTTON = (By.CSS_SELECTOR, 'button[id="startStopButton"]')
     PROGRESS_BAR_VALUE = (By.CSS_SELECTOR, 'div[class="progress-bar bg-info"]')
@@ -83,7 +84,7 @@ class SelectMenuPageLocators:
     MULTISELECT_DROPDOWN = (By.CSS_SELECTOR, "input[id='react-select-4-input']")
     MULTISELECT_DROPDOWN_RESULTS = (By.CSS_SELECTOR, "div[class='css-12jo7m5']")
     REMOVE_ELEMENT_FROM_MULTISELECT = (By.CSS_SELECTOR, "div[class='css-1rhbuit-multiValue'] svg path")
-    ALL_REMOVE_BUTTON = (By.XPATH,("//body//div[@id='app']//div[@class='row']//div[@class='row']//div[contains(@class,'css-1wy0on6')]//div[1]//*[name()='svg']//*[name()='path' and contains(@d,'M14.348 14')]"))
+    ALL_REMOVE_BUTTON = (By.XPATH, ("//body//div[@id='app']//div[@class='row']//div[@class='row']//div[contains(@class,'css-1wy0on6')]//div[1]//*[name()='svg']//*[name()='path' and contains(@d,'M14.348 14')]"))
 
     OLD_SELECT = (By.CSS_SELECTOR, "select[id='oldSelectMenu']")
     STANDART_SELECT = (By.CSS_SELECTOR, "select[id='cars']")

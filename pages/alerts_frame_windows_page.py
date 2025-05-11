@@ -16,14 +16,14 @@ class BrowserWindowsPage(BasePage):
     def check_opened_new_tub(self):
         self.element_is_visible(self.locators.NEW_TAB_BUTTON).click()
         self.go_to_new_window(1)
-        title_text =self. get_element_text(self.locators.TITLE_NEW_TAB)
+        title_text = self. get_element_text(self.locators.TITLE_NEW_TAB)
         return title_text
 
     @allure.step('check opened new window')
     def check_opened_new_window(self):
         self.element_is_visible(self.locators.NEW_WINDOW_BUTTON).click()
         self.go_to_new_window(1)
-        title_text =self. get_element_text(self.locators.TITLE_NEW_TAB)
+        title_text = self. get_element_text(self.locators.TITLE_NEW_TAB)
         return title_text
 
 
@@ -36,7 +36,6 @@ class AlertsPage(BasePage):
         self.element_is_visible(self.locators.SEE_ALERT_BUTTON).click()
         alert_window = self.go_to_alert()
         return alert_window.text
-
 
     def check_alert_appear_5_sec(self):
         self.element_is_visible(self.locators.APPEAR_ALERT_BUTTON).click()
@@ -75,7 +74,7 @@ class FramesPage(BasePage):
     locators = FramesPageLocators()
 
     @allure.step('check frame1')
-    def check_frame1(self,frame_num):
+    def check_frame1(self, frame_num):
         if frame_num == 'frame1':
             frame = self.element_is_present(self.locators.FIRST_FRAME)
             width = frame.get_attribute('width')
@@ -86,16 +85,15 @@ class FramesPage(BasePage):
             return [width, height, text]
 
     @allure.step('check frame2')
-    def check_frame2(self,frame_num):
+    def check_frame2(self, frame_num):
         if frame_num == 'frame2':
             frame = self.element_is_present(self.locators.SECOND_FRAME)
             width = frame.get_attribute('width')
             height = frame.get_attribute('height')
             self.go_to_frame(frame)
-            text =  self.get_element_text(self.locators.TITLE_FRAME)
+            text = self.get_element_text(self.locators.TITLE_FRAME)
             self.driver.switch_to.default_content()
             return [width, height, text]
-
 
 
 class NestedFramesPage(BasePage):
@@ -105,10 +103,10 @@ class NestedFramesPage(BasePage):
     def check_nested_frame(self):
         parent_frame = self.element_is_present(self.locators.PARENT_FRAME)
         self.go_to_frame(parent_frame)
-        parent_text =  self.get_element_text(self.locators.PARENT_TEXT)
+        parent_text = self.get_element_text(self.locators.PARENT_TEXT)
         child_frame = self.element_is_present(self.locators.CHILD_FRAME)
         self.go_to_frame(child_frame)
-        child_text =  self.get_element_text(self.locators.CHILD_TEXT)
+        child_text = self.get_element_text(self.locators.CHILD_TEXT)
         return parent_text, child_text
 
 

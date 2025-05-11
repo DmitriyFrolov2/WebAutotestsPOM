@@ -1,11 +1,10 @@
 import allure
 import pytest
 
-import time
+
 from pages.elements_page import TextBoxPage, CheckBoxPage, RadioButtonPage, WebTablePage, ButtonsPage, LinksPage, \
     UploadAndDownloadPage, DynamicPropertiesPage
 import random
-
 
 
 @allure.suite("Elements Page")
@@ -97,8 +96,8 @@ class TestElementsPage:
             web_table_page = WebTablePage(driver, 'https://demoqa.com/webtables')
             web_table_page.open()
             expected_rows_count = [5, 10, 20]
-            rows_count  = web_table_page.select_from_rows_dropdown()
-            assert rows_count  == expected_rows_count, "Количество строк в таблице не изменилось или изменилось некорректно."
+            rows_count = web_table_page.select_from_rows_dropdown()
+            assert rows_count == expected_rows_count, "Количество строк в таблице не изменилось или изменилось некорректно."
 
     @allure.feature("Buttons")
     class TestButtonsPage:
@@ -137,8 +136,8 @@ class TestElementsPage:
             assert href_link == current_url, "Ссылка ведет на другой URL или нерабочая"
 
         @allure.title("API calls test")
-        def test_api_calls(self,driver):
-            links_page = LinksPage(driver,'https://demoqa.com/links')
+        def test_api_calls(self, driver):
+            links_page = LinksPage(driver, 'https://demoqa.com/links')
             links_page.open()
             expected_status_message = links_page.get_api_call_links_text()
             response_code, response_message = links_page.check_api_call_links()
