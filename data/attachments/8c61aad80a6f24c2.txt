@@ -1,0 +1,2 @@
+Не все элементы стали видимыми за 5 секунд по локатору: ('css selector', 'div[id="demo-tabpane-grid"] div[class="list-group-item list-group-item-action"]')
+Не все элементы стали видимыми за 5 секунд по локатору: ('css selector', 'div[id="demo-tabpane-grid"] div[class="list-group-item list-group-item-action"]')

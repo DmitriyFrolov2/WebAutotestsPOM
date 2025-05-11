@@ -1,0 +1,4 @@
+Элемент не появился в DOM за 30 секунд по локатору: ('css selector', 'button[aria-describedby="buttonToolTip"]')
+Элемент не найден в DOM для проверки видимости: ('css selector', 'button[aria-describedby="buttonToolTip"]')
+Элемент не появился в DOM за 30 секунд по локатору: ('css selector', 'div[class="tooltip-inner"]')
+Элемент не найден в DOM для проверки видимости: ('css selector', 'div[class="tooltip-inner"]')

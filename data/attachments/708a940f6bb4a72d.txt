@@ -1,0 +1,2 @@
+Элемент не появился в DOM за 30 секунд по локатору: ('xpath', "//p[@id='rightClickMessage']")
+Элемент не найден в DOM для проверки видимости: ('xpath', "//p[@id='rightClickMessage']")
