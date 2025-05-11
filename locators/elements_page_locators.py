@@ -52,18 +52,17 @@ class WebTablePageLocators:
     NO_ROWS_FOUND = (By.XPATH, "//div[@class ='rt-noData']")
     COUNT_ROW_LIST = (By.XPATH, "//select[@aria-label = 'rows per page']")
 
-    #update
+    # update
     UPDATE_BUTTON = (By.XPATH, "//span[@title='Edit']")
 
     # Locator for the search
     SEARCH_INPUT = (By.XPATH, "//input[@id='searchBox']")
 
 
-
 class ButtonsPageLocators:
     DOUBLE_CLICK_BUTTON = (By.XPATH, "//button[@id='doubleClickBtn']")
     RIGHT_CLICK_BUTTON = (By.XPATH, "//button[@id='rightClickBtn']")
-    CLICK_ME_BUTTON = (By.XPATH, "//button[text()='Click Me']" )
+    CLICK_ME_BUTTON = (By.XPATH, "//button[text()='Click Me']")
     # result
     DOUBLE_CLICK_MESSAGE = (By.XPATH, "//p[@id='doubleClickMessage']")
     RIGHT_CLICK_MESSAGE = (By.XPATH, "//p[@id='rightClickMessage']")
