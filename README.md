@@ -117,7 +117,7 @@ WebAutotestsPOM/
 ### Главная страница Allure-отчета
 
 <p align="center">
-<img title="Allure Overview" src=".images/Screenshot_7.jpg">
+<img title="Allure Overview" src="images/Screenshot_7.jpg">
 </p>
 
 <details>
@@ -130,7 +130,7 @@ WebAutotestsPOM/
 ### :dart: Информация о тестовом прогоне в графическом виде
 
 <p align="center">
-<img title="Allure Graphs" src=".images/graphs.jpg">
+<img title="Allure Graphs" src="images/graphs.jpg">
 </p>
 
 <details>
@@ -142,7 +142,7 @@ WebAutotestsPOM/
 ### 🎯Группировка тестов по проверяемому функционалу
 
 <p align="center">
-<img title="Allure Behaviors" src=".images/behaviors.jpg">
+<img title="Allure Behaviors" src="images/behavi  ors.jpg">
 </p>
 
 <details>
