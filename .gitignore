@@ -181,3 +181,5 @@ cython_debug/
 
 # Игнорировать папку allure_results
 tests/allure_results/
+allure-results/
+allure-report/
