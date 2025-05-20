@@ -1,4 +1,4 @@
-# WebAutotestsPOM
+# Проект по автоматизации тестирования
 
 ![GitHub Actions Status](https://github.com/DmitriyFrolov2/WebAutotestsPOM/workflows/Run%20Selected%20Tests%20and%20Publish%20Allure%20Report/badge.svg)
 ![Pytest](https://img.shields.io/badge/Tests-pytest-blue)
@@ -142,7 +142,7 @@ WebAutotestsPOM/
 ### 🎯Группировка тестов по проверяемому функционалу
 
 <p align="center">
-<img title="Allure Behaviors" src="images/behavi  ors.jpg">
+<img title="Allure Behaviors" src="images/behaviors.jpg">
 </p>
 
 <details>
