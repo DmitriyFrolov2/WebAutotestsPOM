@@ -3,7 +3,7 @@ version: "3.9"
 services:
   tests:
     build:
-      context: .
+      context: ..
       dockerfile: ci/Dockerfile
     volumes:
       - ../allure-results:/tests/allure-results
