@@ -6,5 +6,7 @@ services:
       context: ..
       dockerfile: ci/Dockerfile
     volumes:
-      - ../allure-results:/tests/allure-results
-    command: pytest tests --alluredir=allure-results
+      - ./allure-results:/tests/allure-results
+    environment:
+      PYTHONUNBUFFERED: 1
+    command: pytest tests --alluredir=/tests/allure-results

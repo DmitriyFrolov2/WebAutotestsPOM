@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y \
 
 ENV CHROME_BIN=/usr/bin/google-chrome
 
+RUN mkdir -p /tests/allure-results && chmod 777 /tests/allure-results
 
 WORKDIR /tests
 COPY requirements.txt ./
@@ -20,4 +21,4 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 COPY . .
 
 
-CMD ["pytest", "tests", "--alluredir=allure-results"]
+CMD ["pytest", "tests", "--alluredir=/tests/allure-results"]
