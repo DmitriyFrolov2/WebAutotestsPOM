@@ -49,7 +49,7 @@ jobs:
         sudo ln -s /opt/allure-2.23.1/bin/allure /usr/bin/allure
 
     - name: Run selected tests with Allure
-      
+      if: always()
       run: |
         if [ "${{ github.event.inputs.test_file }}" = "all" ]; then
           pytest tests --alluredir=tests/allure_results
@@ -58,11 +58,12 @@ jobs:
         fi
 
     - name: Generate Allure Report
-      
+      if: always()
       run: |
         allure generate tests/allure_results -o allure-report
 
     - name: Deploy Allure Report to GitHub Pages
+      if: always()
       uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
